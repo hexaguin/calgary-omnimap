@@ -106,11 +106,11 @@ var plus15StyleUnknown = {
 	weight: 1
 };
 var plus15StyleExposed = {
-	color: '#2222FE',
+	color: '#003865',
 	weight: 2
 };
 var plus15StyleEnclosed = {
-	color: '#FE2222',
+	color: '#0085AD',
 	weight: 2
 };
 plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it streamlines development, and makes things easier if I want to color code closed sections later
@@ -139,7 +139,7 @@ plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it st
 
 
 var offLeashStyle = {
-	color: '#4caf50',
+	color: '#4C8C2B',
 	weight: 2
 }
 var offLeashLayer = L.featureGroup.subGroup(walkingLayer);
@@ -205,12 +205,12 @@ var userCircle;
 function onLocationFound(e) {
 	var radius = e.accuracy / 2;
 	if (!userMarker) {
-		userMarker = L.circleMarker(e.latlng, {color: 'white', fillColor: 'blue', fillOpacity: 1, radius: 8, weight: 2}).addTo(omnimap).bindPopup("You are within " + radius + " meters of this point");
+		userMarker = L.circleMarker(e.latlng, {color: 'white', fillColor: '#006298', fillOpacity: 1, radius: 8, weight: 2}).addTo(omnimap).bindPopup("You are within " + radius + " meters of this point");
 	} else {
 		userMarker.setLatLng(e.latlng);
 	}
 	if (!userCircle) {
-		userCircle = L.circle(e.latlng, {color: 'blue', weight: 0, radius: radius}).addTo(omnimap);
+		userCircle = L.circle(e.latlng, {color: '#0085AD', weight: 0, radius: radius}).addTo(omnimap);
 	} else {
 		userCircle.setLatLng(e.latlng);
 	}
