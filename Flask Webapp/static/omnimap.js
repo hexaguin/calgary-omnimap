@@ -35,6 +35,7 @@ trafficIncidents = L.realtime({
 	}
 ).addTo(omnimap);
 
+
 var detourMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'car', markerColor: 'orange', iconColor: 'white'})
 };
@@ -44,7 +45,7 @@ trafficDetours = L.realtime({
 		crossOrigin: true,
 		type: 'json'
 	}, {
-		interval: 60 * 60 * 1000,
+		interval: 60 * 60 * 1000, //1 hour
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, detourMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
 		},
@@ -54,6 +55,23 @@ trafficDetours = L.realtime({
 	}
 ).addTo(omnimap);
 
+
+var cameraMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'camera', markerColor: 'black', iconColor: 'white'})
+};
+
+cameras = L.realtime({
+		url: '/omnimap/api/cameras',
+		crossOrigin: true,
+		type: 'json'
+	}, {
+		interval: 24 * 60 * 60 * 1000, //24 hours
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, cameraMarkerOptions).bindPopup(feature.properties.popup);
+		}
+	}
+);
+
 var baseMaps = {
 	"Street Map": OpenStreetMap_Mapnik,
 	"Satellite": Esri_WorldImagery
@@ -61,7 +79,8 @@ var baseMaps = {
 
 var overlayMaps = {
 	'Traffic Incidents': trafficIncidents,
-	'Construction Detours': trafficDetours
+	'Construction Detours': trafficDetours,
+	'Traffic Cameras': cameras
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);

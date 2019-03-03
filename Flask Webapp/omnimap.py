@@ -3,7 +3,7 @@ import json
 
 def set_or_value(x):
     if len(set(x)) > 1:
-        return set(x)
+        return list(set(x))
     else:
         return x.iloc[0]
 
@@ -16,24 +16,31 @@ def make_camera_image_list(cameras):
         return '<br>'.join([camera_link_format.format(x) for x in cameras])
 
 #API endpoint for static data from non-geojson sources. TODO output geojson?
-def generateStaticData(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
+def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
     traffic_cameras['id_prefix'] = [s.split('.')[0] for s in traffic_cameras['id']]
-    traffic_cameras = traffic_cameras.groupby('id_prefix').aggregate(set_or_value) # Aggregate any entries of the same camera ID prefix for multiple rows (usually 3 camera setups at interchanges). These entries consistently share the same lat/long.
+    traffic_cameras = traffic_cameras.groupby('id_prefix').aggregate(set_or_value).reset_index() # Aggregate any entries of the same camera ID prefix for multiple rows (usually 3 camera setups at interchanges). These entries consistently share the same lat/long.
+    traffic_cameras = traffic_cameras.rename(index=str, columns={"id_prefix": "id", "id": "sub_id"})
     
-    camera_popups = []
-    
+    camera_features = []
     for index, row in traffic_cameras.iterrows():
-        popup = '<h2>' + row['name'] + '</h2>' + \
+        row['popup'] = '<h2>' + row['name'] + '</h2>' + \
                 make_camera_image_list(row['url']) + '<br>' + \
                 str(row['description']) # TODO better handling of sets of differing descriptions
-        
-        camera_popups.append(popup)
-    
-    traffic_cameras['popup'] = camera_popups
-    
-    traffic_cameras_dict = {
-        'points': traffic_cameras[['latitude', 'longitude', 'popup']].to_dict(orient='records')
+        feature = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [row['longitude'], row['latitude']]
+            },
+            'properties': row.to_dict()
+        }
+        camera_features.append(feature)
+
+    camera_dict = {
+        'type': 'FeatureCollection',
+        'features': camera_features
     }
-    return json.dumps(traffic_cameras_dict)
+
+    return json.dumps(camera_dict)
