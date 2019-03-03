@@ -3,8 +3,14 @@ body {
 }
 
 #map-container {
-	position: absolute;
+	/* position: absolute;
 	top: 0px;
 	bottom: 0px;
+	width: 100%; */
+	height: calc(100vh - 56px);
 	width: 100%;
+}
+
+.nav-link {
+	color: #c8102e;
 }
