@@ -165,3 +165,24 @@ var overlayMaps = {
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);
+
+//User GPS
+var userMarker;
+var userCircle;
+
+function onLocationFound(e) {
+	var radius = e.accuracy / 2;
+	if (!userMarker) {
+		userMarker = L.circleMarker(e.latlng, {color: 'white', fillColor: 'blue', fillOpacity: 1, radius: 8, weight: 2}).addTo(omnimap).bindPopup("You are within " + radius + " meters of this point");
+	} else {
+		userMarker.setLatLng(e.latlng);
+	}
+	if (!userCircle) {
+		userCircle = L.circle(e.latlng, {color: 'blue', weight: 0, radius: radius}).addTo(omnimap);
+	} else {
+		userCircle.setLatLng(e.latlng);
+	}
+}
+
+omnimap.on('locationfound', onLocationFound);
+omnimap.locate({setView: false, watch: true, maxZoom: 16, enableHighAccuracy: true});
