@@ -44,7 +44,7 @@ trafficIncidents = L.realtime({
 	}, {
 		interval: 60 * 1000,
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, incidentMarkerOptions).bindPopup(feature.properties.incident_info + '<br>' + feature.properties.description);
+			return L.marker(latlng, incidentMarkerOptions).bindPopup('<h2>Traffic Incident</h2>' + feature.properties.incident_info + '<br>' + feature.properties.description);
 		},
 		getFeatureId: function(featureData){
 			return featureData.properties.latitude + featureData.properties.longitude;
