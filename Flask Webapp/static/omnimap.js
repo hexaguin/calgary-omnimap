@@ -1,4 +1,6 @@
-var omnimap = L.map('map-container').setView([51.0486, -114.0708], 11);
+var omnimap = L.map('map-container', {
+	zoomSnap: 0.25
+}).setView([51.0486, -114.0708], 11);
 
 // Basemaps
 
