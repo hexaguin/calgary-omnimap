@@ -93,12 +93,13 @@ cameras = L.realtime({
 //WALKING
 var walkingLayer = L.featureGroup(); // Master layer for walking features
 
-//Plus 15 polygons
-function hashCode(s) { //Hashing function for an upcoming messy hack
+function hashCode(s) { //Hashing function for messily adding an ID to polygons
 	for(var i = 0, h = 0; i < s.length; i++)
 		h = Math.imul(31, h) + s.charCodeAt(i) | 0;
 	return h;
 }
+
+//Plus 15 polygons
 var plus15Layer = L.featureGroup.subGroup(walkingLayer);
 var plus15StyleUnknown = {
 	color: '#222222',
@@ -137,6 +138,36 @@ plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it st
 ).addTo(plus15Layer);
 
 
+var offLeashStyle = {
+	color: '#4caf50',
+	weight: 2
+}
+var offLeashLayer = L.featureGroup.subGroup(walkingLayer);
+offLeash = L.realtime({
+		url: 'https://data.calgary.ca/resource/enr4-crti.geojson',
+		crossOrigin: true,
+		type: 'json'
+	}, {
+		interval: 24 * 60 * 60 * 1000, //24 hours
+		getFeatureId: function(featureData){
+			return featureData.properties.off_leash_area_id
+		},
+		style: function(featureData){
+			return offLeashStyle;
+		},
+		onEachFeature: function(feature, layer){
+			var popupString = '<h2 class=\"titlecase\">Off-Leash Area</h2><h3 class=\"titlecase\">' + feature.properties.description.toLowerCase() + '</h3>';
+			if (feature.properties.fencing_info != null){
+				popupString += '<br>Fencing: ' + feature.properties.fencing_info.toLowerCase();
+			}
+			layer.bindPopup(popupString);
+		},
+		filter: function(feature){
+			return feature.properties.status === 'OPEN';
+		}
+	}
+).addTo(offLeashLayer);
+
 // Map setup
 // Enable default layers
 drivingLayer.addTo(omnimap);
@@ -162,6 +193,7 @@ var overlayMaps = {
 	'Traffic Cameras': cameraLayer,
 	'<b>Walking</b>': walkingLayer,
 	'Plus 15': plus15Layer,
+	'Off Leash Areas': offLeashLayer
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);

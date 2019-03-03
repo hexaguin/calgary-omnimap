@@ -15,3 +15,15 @@ body {
 .leaflet-control-layers-overlays b {
 	font-size: 1.5em;
 }
+
+.leaflet-popup-content h2 {
+	font-size: 2em;
+}
+
+.leaflet-popup-content h3 {
+	font-size: 1.5em;
+}
+
+.titlecase {
+	text-transform: capitalize;
+}
