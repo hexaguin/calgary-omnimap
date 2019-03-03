@@ -168,6 +168,52 @@ offLeash = L.realtime({
 	}
 ).addTo(offLeashLayer);
 
+//BIKE
+var bikeLayer = L.featureGroup();
+
+//Park and Bike
+var parkAndBikeMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'green', iconColor: 'white'})
+};
+var parkAndBikeLayer = L.featureGroup.subGroup(bikeLayer);
+parkAndBike = L.realtime({
+		url: 'https://data.calgary.ca/resource/nc6z-cxzf.geojson',
+		crossOrigin: true,
+		type: 'json'
+	}, {
+		interval: 24 * 60 * 60 * 1000, //24 hours
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, parkAndBikeMarkerOptions).bindPopup('<h2>Park and Bike</h2><h3>' + feature.properties.name + '</h3>' + feature.properties.general_info);
+		},
+		getFeatureId: function(featureData){
+			return featureData.properties.name;
+		}
+	}
+).addTo(parkAndBikeLayer);
+
+var cpaBikeMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'darkgreen', iconColor: 'white'})
+}
+var cpaBikeLayer = L.featureGroup.subGroup(bikeLayer);
+cpaBike = L.realtime({
+		url: 'https://data.calgary.ca/resource/afcw-kkyc.geojson',
+		crossOrigin: true,
+		type: 'json'
+	}, {
+		interval: 24 * 60 * 60 * 1000, //24 hours
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, cpaBikeMarkerOptions).bindPopup('<h2>CPA Bike Parking</h2><h3>' +
+			                                                        feature.properties.name + '</h3>' + 
+			                                                        'Indoor stalls: ' + feature.properties.indoor_stalls +
+			                                                        '<br>Outdoor stalls: '+ feature.properties.outdoor_stalls);
+		},
+		getFeatureId: function(featureData){
+			return featureData.properties.name;
+		}
+	}
+).addTo(cpaBikeLayer);
+
+
 // Map setup
 // Enable default layers
 drivingLayer.addTo(omnimap);
@@ -177,6 +223,10 @@ detourLayer.addTo(omnimap);
 walkingLayer.addTo(omnimap);
 plus15Layer.addTo(omnimap);
 
+//bikeLayer.addTo(omnimap);
+parkAndBikeLayer.addTo(omnimap);
+cpaBikeLayer.addTo(omnimap);
+
 //Add basemaps to control
 var baseMaps = {
 	"Street Map": OpenStreetMap_Mapnik,
@@ -185,7 +235,7 @@ var baseMaps = {
 	"Dark": CartoDB_DarkMatter
 };
 
-//Add all controlable layers to control
+//Add all controlable layers to layer control
 var overlayMaps = {
 	'<b>Driving</b>': drivingLayer,
 	'Traffic Incidents': incidentLayer,
@@ -193,7 +243,10 @@ var overlayMaps = {
 	'Traffic Cameras': cameraLayer,
 	'<b>Walking</b>': walkingLayer,
 	'Plus 15': plus15Layer,
-	'Off Leash Areas': offLeashLayer
+	'Off Leash Areas': offLeashLayer,
+	'<b>Cycling</b>': bikeLayer,
+	'Park and Bike': parkAndBikeLayer,
+	'CPA Bike Parking': cpaBikeLayer
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);
