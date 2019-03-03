@@ -27,7 +27,9 @@ var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all
 
 OpenStreetMap_Mapnik.addTo(omnimap); // Set OSM as the default basemap
 
-// layers
+// LAYERS
+
+// DRIVING
 
 var drivingLayer = L.featureGroup(); // Master layer for road features
 
@@ -71,7 +73,7 @@ trafficDetours = L.realtime({
 ).addTo(detourLayer);
 
 
-//Traffic monitoring cameras. 
+//Traffic monitoring cameras. Uses a flask-based API for reading AB camera listing as GeoJSON.
 var cameraMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'camera', markerColor: 'gray', iconColor: 'white'})
 };
@@ -88,10 +90,61 @@ cameras = L.realtime({
 	}
 ).addTo(cameraLayer);
 
+//WALKING
+var walkingLayer = L.featureGroup(); // Master layer for walking features
+
+//Plus 15 polygons
+function hashCode(s) { //Hashing function for an upcoming messy hack
+	for(var i = 0, h = 0; i < s.length; i++)
+		h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+	return h;
+}
+var plus15Layer = L.featureGroup.subGroup(walkingLayer);
+var plus15StyleUnknown = {
+	color: '#222222',
+	weight: 1
+};
+var plus15StyleExposed = {
+	color: '#2222FE',
+	weight: 2
+};
+var plus15StyleEnclosed = {
+	color: '#FE2222',
+	weight: 2
+};
+plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it streamlines development, and makes things easier if I want to color code closed sections later
+		url: 'https://data.calgary.ca/resource/3u3x-hrc7.geojson',
+		crossOrigin: true,
+		type: 'json'
+	}, {
+		interval: 24 * 60 * 60 * 1000, //24 hours
+		getFeatureId: function(featureData){ //DIRTY HACK, NEED A BETTER WAY TO MAKE IDs THAN HASHES OF OBJECTS
+			return hashCode(JSON.stringify(featureData));
+		},
+		style: function(featureData) {
+			if (typeof featureData.properties.type === 'undefined'){ //No labelled type of structure
+				return plus15StyleUnknown;
+			} else if (featureData.properties.type == 'Open to Sky') {
+				return plus15StyleExposed;
+			} else {
+				return plus15StyleEnclosed;
+			}
+		},
+		onEachFeature: function(feature, layer){
+			layer.bindPopup('<h2>Plus 15</h2>Hours: ' + feature.properties.access_hours + '<br>Type: ' + feature.properties.type);
+		}
+	}
+).addTo(plus15Layer);
+
+
+// Map setup
 // Enable default layers
 drivingLayer.addTo(omnimap);
 incidentLayer.addTo(omnimap);
 detourLayer.addTo(omnimap);
+
+walkingLayer.addTo(omnimap);
+plus15Layer.addTo(omnimap);
 
 //Add basemaps to control
 var baseMaps = {
@@ -106,7 +159,9 @@ var overlayMaps = {
 	'<b>Driving</b>': drivingLayer,
 	'Traffic Incidents': incidentLayer,
 	'Construction Detours': detourLayer,
-	'Traffic Cameras': cameraLayer
+	'Traffic Cameras': cameraLayer,
+	'<b>Walking</b>': walkingLayer,
+	'Plus 15': plus15Layer,
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);
