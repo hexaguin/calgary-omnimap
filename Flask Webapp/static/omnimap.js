@@ -81,9 +81,7 @@ var cameraMarkerOptions = {
 };
 var cameraLayer = L.featureGroup.subGroup(drivingLayer);
 cameras = L.realtime({
-		url: '/omnimap/api/cameras',
-		crossOrigin: true,
-		type: 'json'
+		url: '/omnimap/api/cameras'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
 		removeMissing: true,
@@ -226,8 +224,6 @@ var limeBikeMarkerOptions = {
 var limeBikeLayer = L.featureGroup.subGroup(bikeLayer);
 limeBike = L.realtime({
 		url: '/omnimap/api/lime',
-		crossOrigin: true,
-		type: 'json'
 	}, {
 		interval: 10 * 1000, //10 seconds
 		removeMissing: true,
