@@ -1,5 +1,5 @@
 import pandas as pd
-import json
+import json, requests
 
 def set_or_value(x):
     if len(set(x)) > 1:
@@ -44,3 +44,22 @@ def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff out
     }
 
     return json.dumps(camera_dict)
+
+def get_lime_geojson():
+    bikes = json.loads(requests.get('https://lime.bike/api/partners/v1/gbfs_calgary/free_bike_status.json').text)
+    bike_list = [
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [float(i['lon']), float(i['lat'])]
+            },
+            'properties': i
+        }
+        for i in bikes['data']['bikes']
+    ]
+    bike_dict = {
+        'type': 'FeatureCollection',
+        'features': bike_list
+    }
+    return json.dumps(bike_dict)

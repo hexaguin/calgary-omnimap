@@ -43,6 +43,7 @@ trafficIncidents = L.realtime({
 		type: 'json'
 	}, {
 		interval: 60 * 1000,
+		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, incidentMarkerOptions).bindPopup('<h2>Traffic Incident</h2>' + feature.properties.incident_info + '<br>' + feature.properties.description);
 		},
@@ -63,6 +64,7 @@ trafficDetours = L.realtime({
 		type: 'json'
 	}, {
 		interval: 60 * 60 * 1000, //1 hour
+		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, detourMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
 		},
@@ -84,6 +86,7 @@ cameras = L.realtime({
 		type: 'json'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
+		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, cameraMarkerOptions).bindPopup(feature.properties.popup);
 		}
@@ -119,6 +122,7 @@ plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it st
 		type: 'json'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
+		removeMissing: true,
 		getFeatureId: function(featureData){ //DIRTY HACK, NEED A BETTER WAY TO MAKE IDs THAN HASHES OF OBJECTS
 			return hashCode(JSON.stringify(featureData));
 		},
@@ -149,6 +153,7 @@ offLeash = L.realtime({
 		type: 'json'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
+		removeMissing: true,
 		getFeatureId: function(featureData){
 			return featureData.properties.off_leash_area_id
 		},
@@ -173,7 +178,7 @@ var bikeLayer = L.featureGroup();
 
 //Park and Bike
 var parkAndBikeMarkerOptions = {
-	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'green', iconColor: 'white'})
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'blue', iconColor: 'white'})
 };
 var parkAndBikeLayer = L.featureGroup.subGroup(bikeLayer);
 parkAndBike = L.realtime({
@@ -182,6 +187,7 @@ parkAndBike = L.realtime({
 		type: 'json'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
+		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, parkAndBikeMarkerOptions).bindPopup('<h2>Park and Bike</h2><h3>' + feature.properties.name + '</h3>' + feature.properties.general_info);
 		},
@@ -201,6 +207,7 @@ cpaBike = L.realtime({
 		type: 'json'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
+		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, cpaBikeMarkerOptions).bindPopup('<h2>CPA Bike Parking</h2><h3>' +
 			                                                        feature.properties.name + '</h3>' + 
@@ -212,6 +219,26 @@ cpaBike = L.realtime({
 		}
 	}
 ).addTo(cpaBikeLayer);
+
+var limeBikeMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'green', iconColor: 'white'})
+}
+var limeBikeLayer = L.featureGroup.subGroup(bikeLayer);
+limeBike = L.realtime({
+		url: '/omnimap/api/lime',
+		crossOrigin: true,
+		type: 'json'
+	}, {
+		interval: 5 * 1000, //5 seconds
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, limeBikeMarkerOptions).bindPopup('<h2>Lime Bike</h2><h3>' + feature.properties.plate_number + '</h3>');
+		},
+		getFeatureId: function(featureData){
+			return featureData.properties.BICYCLE_ID;
+		}
+	}
+).addTo(limeBikeLayer);
 
 
 // Map setup
@@ -246,7 +273,8 @@ var overlayMaps = {
 	'Off Leash Areas': offLeashLayer,
 	'<b>Cycling</b>': bikeLayer,
 	'Park and Bike': parkAndBikeLayer,
-	'CPA Bike Parking': cpaBikeLayer
+	'CPA Bike Parking': cpaBikeLayer,
+	'Lime Rental Bikes': limeBikeLayer
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);
