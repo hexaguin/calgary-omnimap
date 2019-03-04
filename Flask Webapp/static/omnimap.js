@@ -231,6 +231,7 @@ limeBike = L.realtime({
 	}, {
 		interval: 10 * 1000, //10 seconds
 		removeMissing: true,
+		start: false, //Don't automatically start loading geojson
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, limeBikeMarkerOptions).bindPopup('<h2>Lime Bike</h2><h3>' + feature.properties.plate_number + '</h3>');
 		},
@@ -239,7 +240,6 @@ limeBike = L.realtime({
 		}
 	}
 ).addTo(limeBikeLayer);
-limeBike.stop(); //Don't keep polling after we've set up the layer
 
 
 // Map setup
