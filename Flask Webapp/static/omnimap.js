@@ -198,7 +198,7 @@ parkAndBike = L.realtime({
 ).addTo(parkAndBikeLayer);
 
 var cpaBikeMarkerOptions = {
-	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'darkgreen', iconColor: 'white'})
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'darkgreen', iconColor: '#e5b03b'})
 }
 var cpaBikeLayer = L.featureGroup.subGroup(bikeLayer);
 cpaBike = L.realtime({
@@ -229,7 +229,7 @@ limeBike = L.realtime({
 		crossOrigin: true,
 		type: 'json'
 	}, {
-		interval: 5 * 1000, //5 seconds
+		interval: 10 * 1000, //10 seconds
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, limeBikeMarkerOptions).bindPopup('<h2>Lime Bike</h2><h3>' + feature.properties.plate_number + '</h3>');
@@ -239,6 +239,7 @@ limeBike = L.realtime({
 		}
 	}
 ).addTo(limeBikeLayer);
+limeBike.stop(); //Don't keep polling after we've set up the layer
 
 
 // Map setup
@@ -278,6 +279,18 @@ var overlayMaps = {
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(omnimap);
+
+// Logic to only poll Lime when visible
+omnimap.on('overlayadd', function(layer) {
+	if (layer.name == "Lime Rental Bikes"){ //TODO find a better way to identify the layer
+		limeBike.start();
+	}
+});
+omnimap.on('overlayremove', function(layer) {
+	if (layer.name == "Lime Rental Bikes"){
+		limeBike.stop();
+	}
+});
 
 //User GPS
 var userMarker;
