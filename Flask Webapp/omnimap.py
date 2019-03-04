@@ -1,5 +1,5 @@
 import pandas as pd
-import json, requests
+import json, requests, polyline
 
 def set_or_value(x):
     if len(set(x)) > 1:
@@ -15,7 +15,12 @@ def make_camera_image_list(cameras):
     else:
         return '<br>'.join([camera_link_format.format(x) for x in cameras])
 
-#API endpoint for static data from non-geojson sources. TODO output geojson?
+def drop_key(orig, key):
+    clone = dict(orig)
+    del clone[key]
+    return clone
+
+#API endpoints
 def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
@@ -63,3 +68,22 @@ def get_lime_geojson():
         'features': bike_list
     }
     return json.dumps(bike_dict)
+
+def get_ab_roads_geojson():
+    ab_road_list = json.loads(requests.get('https://511.alberta.ca/api/v2/get/winterroads').text)
+    ab_road_features = [
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': [(c[1], c[0]) for c in polyline.decode(i['EncodedPolyline'])] # Decode the string and swap lat/long for GeoJSON
+            },
+            'properties': i
+        }
+        for i in ab_road_list
+    ]
+    road_dict = {
+        'type': 'FeatureCollection',
+        'features': ab_road_features
+    }
+    return json.dumps(road_dict)

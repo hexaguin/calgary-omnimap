@@ -91,6 +91,62 @@ cameras = L.realtime({
 	}
 ).addTo(cameraLayer);
 
+var highwayGoodStyle = {
+	color: '#4C8C2B',
+	weight: 8,
+	opacity: 0.8
+}
+var highwayMediumStyle = {
+	color: '#FFC600',
+	weight: 8,
+	opacity: 0.8
+}
+var highwayBadStyle = {
+	color: '#c8102e',
+	weight: 8,
+	opacity: 0.8
+}
+var highwayClosedStyle = {
+	color: '#222222',
+	weight: 8,
+	opacity: 0.8
+}
+var highwayNullStyle = {
+	color: '#888888',
+	weight: 8,
+	opacity: 0.8
+}
+var roadConditionLayer = L.featureGroup.subGroup(drivingLayer);
+abRoadConditions = L.realtime({
+		url:'/omnimap/api/abwinterroads'
+	}, {
+		interval: 15 * 60 * 1000, //15 minutes. How often *does* this data get updated anyways? TODO find out and update this interval
+		getFeatureId: function(featureData){
+			return featureData.properties.EncodedPolyline; //I think this is the best I can do for IDs for now
+		},
+		style: function(featureData){
+			condition = featureData.properties['Primary Condition'];
+			if (condition == 'Closed'){
+				return highwayClosedStyle;
+			} else if (condition.includes('Ptly Cvd')) {
+				return highwayMediumStyle;
+			} else if (condition.includes('Cvd')) {
+				return highwayBadStyle;
+			} else if (condition.includes('Bare')) {
+				return highwayGoodStyle;
+			} else {
+				return highwayNullStyle;
+			}
+		},
+		onEachFeature: function(feature, layer){
+			layer.bindPopup('<h2 class=\"titlecase\">'+feature.properties.AreaName.toLowerCase() +
+			                '</h2><h3>' + feature.properties.LocationDescription +
+			                '</h3>Visibility: ' + feature.properties.Visibility + '<br>' +
+			                feature.properties['Primary Condition'] + '<br>' + feature.properties['Secondary Conditions']);
+		}
+	}
+).addTo(roadConditionLayer);
+
 //WALKING
 var walkingLayer = L.featureGroup(); // Master layer for walking features
 
@@ -243,6 +299,7 @@ limeBike = L.realtime({
 drivingLayer.addTo(omnimap);
 incidentLayer.addTo(omnimap);
 detourLayer.addTo(omnimap);
+roadConditionLayer.addTo(omnimap);
 
 walkingLayer.addTo(omnimap);
 plus15Layer.addTo(omnimap);
@@ -265,6 +322,7 @@ var overlayMaps = {
 	'Traffic Incidents': incidentLayer,
 	'Construction Detours': detourLayer,
 	'Traffic Cameras': cameraLayer,
+	'Road Conditions': roadConditionLayer,
 	'<b>Walking</b>': walkingLayer,
 	'Plus 15': plus15Layer,
 	'Off Leash Areas': offLeashLayer,
