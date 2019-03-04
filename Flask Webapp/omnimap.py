@@ -15,11 +15,6 @@ def make_camera_image_list(cameras):
     else:
         return '<br>'.join([camera_link_format.format(x) for x in cameras])
 
-def drop_key(orig, key):
-    clone = dict(orig)
-    del clone[key]
-    return clone
-
 #API endpoints
 def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
