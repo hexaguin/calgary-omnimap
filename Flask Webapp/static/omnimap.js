@@ -100,7 +100,13 @@ cameras = L.realtime({
 		interval: 24 * 60 * 60 * 1000, //24 hours
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, cameraMarkerOptions).bindPopup(feature.properties.popup);
+			return L.marker(latlng, cameraMarkerOptions).bindPopup(feature.properties.popup).on('popupopen', function(e){
+				$('.cam-slideshow').not('.slick-initialized').slick({ //Exclude existing slideshows from old popups so we don't scare slick.
+					dots: true,
+					speed: 100
+				}); 
+				$('.cam-hidden').removeClass('cam-hidden'); //Slideshows start hidden so the stack of img tags don't scroll the page up. Now that we have initialized it, we can display the slideshow.
+			});
 		}
 	}
 ).addTo(cameraLayer);

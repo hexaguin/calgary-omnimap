@@ -7,13 +7,13 @@ def set_or_value(x):
     else:
         return x.iloc[0]
 
-camera_link_format = '<a href=\"{0}\" target=\"_blank\"> <img src=\"{0}\" width=100%> </a>' # HTML format string for an image that links to its source
+camera_link_format = '<a class=\"cam-img\" href=\"{0}\" target=\"_blank\"> <img src=\"{0}\" width=100%> </a>' # HTML format string for an image that links to its source
 
 def make_camera_image_list(cameras):
     if type(cameras) is str:
         return camera_link_format.format(cameras)
     else:
-        return '<br>'.join([camera_link_format.format(x) for x in cameras])
+        return '<div class=\"cam-slideshow cam-hidden\">' + '\n'.join([camera_link_format.format(x) for x in cameras]) + '</div>'
 
 #API endpoints
 def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
