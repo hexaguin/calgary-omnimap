@@ -27,9 +27,23 @@ var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all
 
 OpenStreetMap_Mapnik.addTo(omnimap); // Set OSM as the default basemap
 
-// LAYERS
+/*
+██       █████  ██    ██ ███████ ██████  ███████
+██      ██   ██  ██  ██  ██      ██   ██ ██
+██      ███████   ████   █████   ██████  ███████
+██      ██   ██    ██    ██      ██   ██      ██
+███████ ██   ██    ██    ███████ ██   ██ ███████
+*/
 
-// DRIVING
+/*
+██████  ██████  ██ ██    ██ ██ ███    ██  ██████
+██   ██ ██   ██ ██ ██    ██ ██ ████   ██ ██
+██   ██ ██████  ██ ██    ██ ██ ██ ██  ██ ██   ███
+██   ██ ██   ██ ██  ██  ██  ██ ██  ██ ██ ██    ██
+██████  ██   ██ ██   ████   ██ ██   ████  ██████
+*/
+
+
 
 var drivingLayer = L.featureGroup(); // Master layer for road features
 
@@ -147,7 +161,15 @@ abRoadConditions = L.realtime({
 	}
 ).addTo(roadConditionLayer);
 
-//WALKING
+/*
+██     ██  █████  ██      ██   ██ ██ ███    ██  ██████
+██     ██ ██   ██ ██      ██  ██  ██ ████   ██ ██
+██  █  ██ ███████ ██      █████   ██ ██ ██  ██ ██   ███
+██ ███ ██ ██   ██ ██      ██  ██  ██ ██  ██ ██ ██    ██
+ ███ ███  ██   ██ ███████ ██   ██ ██ ██   ████  ██████
+*/
+
+
 var walkingLayer = L.featureGroup(); // Master layer for walking features
 
 function hashCode(s) { //Hashing function for messily adding an ID to polygons
@@ -227,7 +249,15 @@ offLeash = L.realtime({
 	}
 ).addTo(offLeashLayer);
 
-//BIKE
+/*
+██████  ██ ██   ██ ███████
+██   ██ ██ ██  ██  ██
+██████  ██ █████   █████
+██   ██ ██ ██  ██  ██
+██████  ██ ██   ██ ███████
+*/
+
+
 var bikeLayer = L.featureGroup();
 
 //Park and Bike
@@ -294,7 +324,15 @@ limeBike = L.realtime({
 ).addTo(limeBikeLayer);
 
 
-// Map setup
+/*
+███    ███  █████  ██████      ███████ ███████ ████████ ██    ██ ██████
+████  ████ ██   ██ ██   ██     ██      ██         ██    ██    ██ ██   ██
+██ ████ ██ ███████ ██████      ███████ █████      ██    ██    ██ ██████
+██  ██  ██ ██   ██ ██               ██ ██         ██    ██    ██ ██
+██      ██ ██   ██ ██          ███████ ███████    ██     ██████  ██
+*/
+
+
 // Enable default layers
 drivingLayer.addTo(omnimap);
 incidentLayer.addTo(omnimap);
