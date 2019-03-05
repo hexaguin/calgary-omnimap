@@ -342,44 +342,65 @@ roadConditionLayer.addTo(omnimap);
 walkingLayer.addTo(omnimap);
 plus15Layer.addTo(omnimap);
 
-//bikeLayer.addTo(omnimap);
 parkAndBikeLayer.addTo(omnimap);
 cpaBikeLayer.addTo(omnimap);
 
-//Add basemaps to control
-var baseMaps = {
-	"Street Map": OpenStreetMap_Mapnik,
-	"Bike Map": Thunderforest_OpenCycleMap,
-	"Satellite": Esri_WorldImagery,
-	"Dark": CartoDB_DarkMatter
+var baseTree = { //TODO does this mean I can get rid of the whole group subgroup thing? Probably not
+	label: 'Base Maps',
+	children: [
+		{label: 'Street Map', layer: OpenStreetMap_Mapnik},
+		{label: 'Bike Map', layer: Thunderforest_OpenCycleMap},
+		{label: 'Satellite', layer: Esri_WorldImagery},
+		{label: 'Dark', layer: CartoDB_DarkMatter}
+	]
 };
 
-//Add all controlable layers to layer control
-var overlayMaps = {
-	'<b>Driving</b>': drivingLayer,
-	'Traffic Incidents': incidentLayer,
-	'Construction Detours': detourLayer,
-	'Traffic Cameras': cameraLayer,
-	'Road Conditions': roadConditionLayer,
-	'<b>Walking</b>': walkingLayer,
-	'Plus 15': plus15Layer,
-	'Off Leash Areas': offLeashLayer,
-	'<b>Cycling</b>': bikeLayer,
-	'Park and Bike': parkAndBikeLayer,
-	'CPA Bike Parking': cpaBikeLayer,
-	'Lime Rental Bikes': limeBikeLayer
-};
+var overlayTree = {
+	label: 'Overlays',
+	children: [
+		{
+			label: '<b>Driving</b>',
+			layer: drivingLayer,
+			children: [
+				{label: '<i class="fas fa-car-crash p-red"></i> Traffic Incidents', layer: incidentLayer},
+				{label: '<i class="fas fa-car p-orange"></i> Construction Detours', layer: detourLayer},
+				{label: '<i class="fas fa-camera"></i> Traffic Cameras', layer: cameraLayer},
+				{label: '<i class="fas fa-square c-green"></i> Road Conditions', layer: roadConditionLayer},
+			]
+		},
+		{
+			label: '<b>Walking</b>',
+			layer: walkingLayer,
+			children: [
+				{label: '<i class="fas fa-square c-blue"></i> Plus 15', layer: plus15Layer},
+				{label: '<i class="fas fa-square c-green"></i> Off Leash Areas', layer: offLeashLayer}
+			]
+		},
+		{
+			label: '<b>Cycling</b>',
+			layer: bikeLayer,
+			children: [
+				{label: '<i class="fas fa-bicycle p-blue"></i> Park and Bike', layer: parkAndBikeLayer},
+				{label: '<i class="fas fa-bicycle p-darkgreen"></i> CPA Bike Parking', layer: cpaBikeLayer},
+				{label: '<i class="fas fa-bicycle p-green"></i> Lime Rental Bikes', layer: limeBikeLayer}
+			]
+		}
+	]
+}
 
-L.control.layers(baseMaps, overlayMaps).addTo(omnimap);
+L.control.layers.tree(baseTree, overlayTree, {
+	closedSymbol: '<i class="fas fa-plus-square"></i>',
+	openedSymbol: '<i class="fas fa-minus-square"></i>'
+}).addTo(omnimap).collapseTree(true).collapseTree(false);
 
 // Logic to only poll Lime when visible
 omnimap.on('overlayadd', function(layer) {
-	if (layer.name == "Lime Rental Bikes"){ //TODO find a better way to identify the layer
+	if (layer.layer == limeBikeLayer){ //TODO find a better way to identify the layer
 		limeBike.start();
 	}
 });
 omnimap.on('overlayremove', function(layer) {
-	if (layer.name == "Lime Rental Bikes"){
+	if (layer.layer == limeBikeLayer){
 		limeBike.stop();
 	}
 });

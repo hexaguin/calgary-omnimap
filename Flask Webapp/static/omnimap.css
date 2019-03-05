@@ -13,7 +13,7 @@ body {
 }
 
 .leaflet-control-layers-overlays b {
-	font-size: 1.5em;
+	/* font-size: 1.5em; */
 }
 
 .leaflet-popup-content h2 {
@@ -26,4 +26,44 @@ body {
 
 .titlecase {
 	text-transform: capitalize;
+}
+
+.leaflet-control-layers-expanded {
+	width: 200px;
+}
+
+.leaflet-layerstree-node {
+	padding-left: 5px;
+}
+
+.p-orange { /*popup colors from AwesomeMarkers*/
+	color: #f59630;
+}
+
+.p-red {
+	color: #d23d29;
+}
+
+.p-blue {
+	color: #37a8da;
+}
+
+.p-green {
+	color: #71af26;
+}
+
+.p-darkgreen {
+	color: #728224;
+}
+
+.c-red { /*CoC colors*/
+	color: #c8102e;
+}
+
+.c-green {
+	color: #4C8C2B;
+}
+
+.c-blue {
+	color: #0085AD;
 }
