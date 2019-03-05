@@ -111,6 +111,11 @@ cameras = L.realtime({
 	}
 ).addTo(cameraLayer);
 
+setInterval(function(){
+    $(".cam-img img").each(function(index){
+		$(this).attr("src", $(this).attr("src").split("?")[0] + '?' + new Date().getTime());
+})},15000); //Refreshes any visible cameras every 15 seconds
+
 var highwayGoodStyle = {
 	color: '#4C8C2B',
 	weight: 8,
