@@ -1,5 +1,6 @@
 var omnimap = L.map('map-container', {
-	zoomSnap: 0.25
+	zoomSnap: 0.25,
+	preferCanvas: true
 }).setView([51.0486, -114.0708], 11);
 
 // Basemaps
@@ -399,7 +400,7 @@ var overlayTree = {
 	]
 }
 
-L.control.layers.tree(baseTree, overlayTree, {
+controlTree = L.control.layers.tree(baseTree, overlayTree, {
 	closedSymbol: '<i class="fas fa-plus-square"></i>',
 	openedSymbol: '<i class="fas fa-minus-square"></i>'
 }).addTo(omnimap).collapseTree(true).collapseTree(false);
