@@ -421,6 +421,14 @@ omnimap.on('overlayremove', function(layer) {
 var userMarker;
 var userCircle;
 
+var followingGps = false;
+
+function panToUser() {
+	if(userMarker && followingGps){
+		omnimap.panTo(userMarker._latlng, {duration: 0.2});
+	}
+}
+
 function onLocationFound(e) {
 	var radius = e.accuracy / 2;
 	if (!userMarker) {
@@ -433,7 +441,40 @@ function onLocationFound(e) {
 	} else {
 		userCircle.setLatLng(e.latlng);
 	}
+	panToUser();
 }
 
 omnimap.on('locationfound', onLocationFound);
-omnimap.locate({setView: false, watch: true, maxZoom: 16, enableHighAccuracy: true});
+omnimap.locate({setView: false, watch: true, enableHighAccuracy: true}); //Start repeat tracking
+
+//GPS Follow Toggle 
+var gpsToggle = L.easyButton({
+	states: [{
+	stateName: 'enable-gps',
+	icon: 'fa-crosshairs',
+	title: 'Follow GPS',
+	onClick: function(control) {
+		omnimap.locate({setView: false, watch: true, enableHighAccuracy: true}); //Make sure we're following the user
+		followingGps = true;
+		if(omnimap._zoom < 15 && userMarker){
+			omnimap.flyTo(userMarker._latlng, 15, {duration: 0.2});
+		} else {
+			panToUser();
+		}
+		control.state('disable-gps');
+	}
+}, {
+		icon: 'fa-crosshairs c-blue',
+		stateName: 'disable-gps',
+		title: 'Stop following GPS',
+		onClick: function(control) {
+			followingGps = false;
+			control.state('enable-gps');
+		}
+	}]
+}).addTo(omnimap);
+
+omnimap.on("dragstart", function () { //Stop following GPS when the user pans
+	followingGps = false;
+	gpsToggle.state('enable-gps');
+});
