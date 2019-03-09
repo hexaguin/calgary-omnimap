@@ -349,7 +349,6 @@ limeBike = L.realtime({
 drivingLayer.addTo(omnimap);
 incidentLayer.addTo(omnimap);
 detourLayer.addTo(omnimap);
-roadConditionLayer.addTo(omnimap);
 
 walkingLayer.addTo(omnimap);
 plus15Layer.addTo(omnimap);
