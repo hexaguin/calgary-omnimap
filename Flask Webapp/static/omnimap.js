@@ -187,6 +187,7 @@ abRoadConditions = L.realtime({
 		url:'/omnimap/api/abwinterroads'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes. How often *does* this data get updated anyways? TODO find out and update this interval
+		start: false, //Don't automatically start loading geojson
 		getFeatureId: function(featureData){
 			return featureData.properties.EncodedPolyline; //I think this is the best I can do for IDs for now
 		},
@@ -446,13 +447,27 @@ controlTree = L.control.layers.tree(baseTree, overlayTree, {
 
 // Logic to only poll Lime when visible
 omnimap.on('overlayadd', function(layer) {
-	if (layer.layer == limeBikeLayer){ //TODO find a better way to identify the layer
-		limeBike.start();
+	switch (layer.layer) {
+		case limeBikeLayer:
+			limeBike.start();
+			break;
+		case roadConditionLayer:
+			abRoadConditions.start();
+			break;
+		default:
+			break;
 	}
 });
 omnimap.on('overlayremove', function(layer) {
-	if (layer.layer == limeBikeLayer){
-		limeBike.stop();
+	switch (layer.layer) {
+		case limeBikeLayer:
+			limeBike.stop();
+			break;
+		case roadConditionLayer:
+			abRoadConditions.stop();
+			break;
+		default:
+			break;
 	}
 });
 
