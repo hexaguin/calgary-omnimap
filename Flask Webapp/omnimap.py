@@ -1,7 +1,7 @@
 import pandas as pd
 import json, requests, polyline
 
-calgary_bb = ((-114.303683, -113.857612), (50.868014, 51.190438)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
+calgary_bb = ((-114.359102, -113.778543), (50.822338, 51.25943)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
 def row_in_calgary(row):
     return calgary_bb[0][0] < row['longitude'] < calgary_bb[0][1] and calgary_bb[1][0] < row['latitude'] < calgary_bb[1][1]
 
@@ -23,6 +23,7 @@ def make_camera_image_list(cameras):
 def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
+    traffic_cameras = traffic_cameras[traffic_cameras.apply(row_in_calgary, axis=1)] # Calgary only
     traffic_cameras['id_prefix'] = [s.split('.')[0] for s in traffic_cameras['id']]
     traffic_cameras = traffic_cameras.groupby('id_prefix').aggregate(set_or_value).reset_index() # Aggregate any entries of the same camera ID prefix for multiple rows (usually 3 camera setups at interchanges). These entries consistently share the same lat/long.
     traffic_cameras = traffic_cameras.rename(index=str, columns={"id_prefix": "id", "id": "sub_id"})
