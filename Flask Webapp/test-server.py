@@ -18,6 +18,10 @@ def cameras():
 def ab_winter_roads():
     return omnimap.get_ab_roads_geojson()
 
+@app.route('/omnimap/api/abevents')
+def ab_road_events():
+    return omnimap.get_ab_road_events_geojson()
+
 @app.route('/omnimap/api/lime')
 def lime():
     return omnimap.get_lime_geojson()

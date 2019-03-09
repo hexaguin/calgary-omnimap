@@ -1,6 +1,10 @@
 import pandas as pd
 import json, requests, polyline
 
+calgary_bb = ((-114.303683, -113.857612), (50.868014, 51.190438)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
+def row_in_calgary(row):
+    return calgary_bb[0][0] < row['longitude'] < calgary_bb[0][1] and calgary_bb[1][0] < row['latitude'] < calgary_bb[1][1]
+
 def set_or_value(x):
     if len(set(x)) > 1:
         return list(set(x))
@@ -24,7 +28,7 @@ def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff out
     traffic_cameras = traffic_cameras.rename(index=str, columns={"id_prefix": "id", "id": "sub_id"})
     
     camera_features = []
-    for index, row in traffic_cameras.iterrows():
+    for index, row in traffic_cameras.iterrows(): # TODO check if I even need Pandas for this
         row['popup'] = '<h2>' + row['name'] + '</h2>' + \
                 make_camera_image_list(row['url']) + '<br>' + \
                 str(row['description']) # TODO better handling of sets of differing descriptions
@@ -44,6 +48,31 @@ def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff out
     }
 
     return json.dumps(camera_dict)
+
+def get_ab_road_events_geojson():
+    events_df = pd.read_json('https://511.alberta.ca/api/v2/get/event')
+    events_df.columns = [s.lower() for s in events_df.columns]
+    events_df = events_df[events_df.apply(row_in_calgary, axis=1)] # Only items in Calgary
+    events_df.fillna('', inplace = True) # Remove NaN values to meet JSON standards
+    events_features = []
+    for index, row in events_df.iterrows():
+        row['popup'] = '<h2 class=\"titlecase\">' + row['eventtype'] + '</h2>' + row['description']
+        feature = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [row['longitude'], row['latitude']]
+            },
+            'properties': row.to_dict()
+        }
+        events_features.append(feature)
+    
+    event_dict = {
+        'type': 'FeatureCollection',
+        'features': events_features
+    }
+
+    return json.dumps(event_dict, allow_nan=False)
 
 def get_lime_geojson():
     bikes = json.loads(requests.get('https://lime.bike/api/partners/v1/gbfs_calgary/free_bike_status.json').text)
