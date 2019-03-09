@@ -57,7 +57,7 @@ trafficIncidents = L.realtime({
 		crossOrigin: true,
 		type: 'json'
 	}, {
-		interval: 60 * 1000,
+		interval: 60 * 1000, // 1 minute
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, incidentMarkerOptions).bindPopup('<h2>Traffic Incident</h2>' + feature.properties.incident_info + '<br>' + feature.properties.description);
@@ -67,10 +67,29 @@ trafficIncidents = L.realtime({
 		}
 	}
 ).addTo(incidentLayer);
+abIncidents = L.realtime({
+		url: '/omnimap/api/abevents'
+	}, {
+		interval: 15 * 60 * 1000, //15 minutes
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, incidentMarkerOptions).bindPopup(feature.properties.popup);
+		},
+		filter: function(feature) {
+			return feature.properties.eventtype === 'accidentsAndIncidents'; // Incidents only
+		}
+	}
+).addTo(incidentLayer);
 
 
 var detourMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'car', markerColor: 'orange', iconColor: 'white'})
+};
+var roadworkMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hard-hat', markerColor: 'orange', iconColor: 'white'}) //TODO find a better icon, like a standard worker+shovel one?
+};
+var closureMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'times-circle', markerColor: 'orange', iconColor: 'white'})
 };
 var detourLayer = L.featureGroup.subGroup(drivingLayer);
 trafficDetours = L.realtime({
@@ -78,13 +97,34 @@ trafficDetours = L.realtime({
 		crossOrigin: true,
 		type: 'json'
 	}, {
-		interval: 60 * 60 * 1000, //1 hour
+		interval: 15 * 60 * 1000, //15 minutes
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, detourMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
+			if ( feature.properties.description.includes('The road is closed')) {
+				return L.marker(latlng, closureMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
+			} else {
+				return L.marker(latlng, detourMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
+			}
 		},
 		getFeatureId: function(featureData){
 			return featureData.properties.latitude + featureData.properties.longitude;
+		}
+	}
+).addTo(detourLayer);
+abDetours = L.realtime({ //TODO: New layer for closures
+		url: '/omnimap/api/abevents'
+	}, {
+		interval: 15 * 60 * 1000, //15 minutes
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			if (feature.properties.eventtype === 'closure'){
+				return L.marker(latlng, closureMarkerOptions).bindPopup(feature.properties.popup);
+			} else {
+				return L.marker(latlng, roadworkMarkerOptions).bindPopup(feature.properties.popup);
+			}
+		},
+		filter: function(feature) {
+			return feature.properties.eventtype !== 'accidentsAndIncidents'; // Roadwork and closures only
 		}
 	}
 ).addTo(detourLayer);
@@ -374,7 +414,7 @@ var overlayTree = {
 			layer: drivingLayer,
 			children: [
 				{label: '<i class="fas fa-car-crash p-red"></i> Traffic Incidents', layer: incidentLayer},
-				{label: '<i class="fas fa-car p-orange"></i> Construction Detours', layer: detourLayer},
+				{label: '<i class="fas fa-car p-orange"></i> Closures and Detours', layer: detourLayer},
 				{label: '<i class="fas fa-camera"></i> Traffic Cameras', layer: cameraLayer},
 				{label: '<i class="fas fa-square c-green"></i> Road Conditions', layer: roadConditionLayer},
 			]

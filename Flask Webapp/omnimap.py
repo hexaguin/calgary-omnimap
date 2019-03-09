@@ -50,7 +50,7 @@ def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff out
 
     return json.dumps(camera_dict)
 
-def get_ab_road_events_geojson():
+def get_ab_road_events_geojson(): #TODO: Split into detours/construction and incidents
     events_df = pd.read_json('https://511.alberta.ca/api/v2/get/event')
     events_df.columns = [s.lower() for s in events_df.columns]
     events_df = events_df[events_df.apply(row_in_calgary, axis=1)] # Only items in Calgary
@@ -94,7 +94,7 @@ def get_lime_geojson():
     }
     return json.dumps(bike_dict)
 
-def get_ab_roads_geojson():
+def get_ab_roads_geojson(): # TODO: Limit to Calgary
     ab_road_list = json.loads(requests.get('https://511.alberta.ca/api/v2/get/winterroads').text)
     ab_road_features = [
         {
