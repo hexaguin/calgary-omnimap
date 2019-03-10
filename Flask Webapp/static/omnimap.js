@@ -360,12 +360,27 @@ var limeBikeMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'green', iconColor: 'white'})
 }
 var limeBikeLayer = L.featureGroup.subGroup(bikeLayer);
+var limeBikeClusters = L.markerClusterGroup({
+	iconCreateFunction: function(cluster) {
+		var count = cluster.getChildCount();
+		if (count > 50) { // Large
+			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster lime-cluster-large', iconSize: new L.Point(40, 40) });
+		} else if (count > 10) { // Medium
+			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster lime-cluster-med', iconSize: new L.Point(40, 40) });
+		} else { // Small
+			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster lime-cluster-small', iconSize: new L.Point(40, 40) });
+		}
+	},
+	maxClusterRadius: 50
+});
+limeBikeClusters.addTo(limeBikeLayer);
 limeBike = L.realtime({
 		url: '/omnimap/api/lime',
 	}, {
 		interval: 10 * 1000, //10 seconds
 		removeMissing: true,
 		start: false, //Don't automatically start loading geojson
+		container: limeBikeClusters, //Wrap in cluster group
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, limeBikeMarkerOptions).bindPopup('<h2>Lime Bike</h2><h3>' + feature.properties.plate_number + '</h3>');
 		},
@@ -374,7 +389,6 @@ limeBike = L.realtime({
 		}
 	}
 ).addTo(limeBikeLayer);
-
 
 /*
 ███    ███  █████  ██████      ███████ ███████ ████████ ██    ██ ██████

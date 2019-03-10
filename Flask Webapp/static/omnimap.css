@@ -1,3 +1,5 @@
+/* page */
+
 body {
 	margin: 0;
 }
@@ -11,6 +13,8 @@ body {
 	color: #c8102e;
 	font-weight: bold;
 }
+
+/* map global */
 
 .leaflet-control-layers-overlays b {
 	/* font-size: 1.5em; */
@@ -36,6 +40,8 @@ body {
 	text-transform: capitalize;
 }
 
+/* cameras */
+
 .cam-slideshow {
 	margin: 16px;
 }
@@ -47,6 +53,38 @@ body {
 .slick-next:before, .slick-prev:before {
 	color: #222222;
 }
+
+/* clusters */
+
+.marker-cluster {
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	box-shadow:  3px -1px 3px #0000006e;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.lime-cluster-small {
+	background-color: #71af26;
+	color: #FFFFFF;
+	border-color: #44693d80;
+}
+
+.lime-cluster-med {
+	background-color: #4C8C2B;
+	color: #FFFFFF;
+	border-color: #44693d80;
+}
+
+.lime-cluster-large {
+	background-color: #44693D;
+	color: #FFFFFF;
+	border-color: #2a412580;
+}
+
+/* colors */
 
 .p-orange { /*popup colors from AwesomeMarkers*/
 	color: #f59630;
