@@ -1,5 +1,5 @@
 import pandas as pd
-import json, requests, polyline
+import json, requests, polyline, time
 
 calgary_bb = ((-114.359102, -113.778543), (50.822338, 51.25943)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
 def row_in_calgary(row):
@@ -29,7 +29,7 @@ def get_camera_geojson():
     traffic_cameras = traffic_cameras.rename(index=str, columns={"id_prefix": "id", "id": "sub_id"})
     
     camera_features = []
-    for index, row in traffic_cameras.iterrows()
+    for index, row in traffic_cameras.iterrows():
         row['popup'] = '<h2>' + row['name'] + '</h2>' + \
                 make_camera_image_list(row['url']) + '<br>' + \
                 str(row['description'])
@@ -45,7 +45,10 @@ def get_camera_geojson():
 
     camera_dict = {
         'type': 'FeatureCollection',
-        'features': camera_features
+        'features': camera_features,
+        'meta': {
+            'generated': int(time.time())
+        }
     }
 
     return json.dumps(camera_dict)
@@ -70,7 +73,10 @@ def get_ab_road_events_geojson():
     
     event_dict = {
         'type': 'FeatureCollection',
-        'features': events_features
+        'features': events_features,
+        'meta': {
+            'generated': int(time.time())
+        }
     }
 
     return json.dumps(event_dict, allow_nan=False)
@@ -90,7 +96,10 @@ def get_lime_geojson():
     ]
     bike_dict = {
         'type': 'FeatureCollection',
-        'features': bike_list
+        'features': bike_list,
+        'meta': {
+            'generated': int(time.time())
+        }
     }
     return json.dumps(bike_dict)
 
@@ -109,6 +118,9 @@ def get_ab_roads_geojson(): # TODO: Limit to Calgary
     ]
     road_dict = {
         'type': 'FeatureCollection',
-        'features': ab_road_features
+        'features': ab_road_features,
+        'meta': {
+            'generated': int(time.time())
+        }
     }
     return json.dumps(road_dict)

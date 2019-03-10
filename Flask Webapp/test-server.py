@@ -7,7 +7,6 @@ app = flask.Flask(__name__)
 @app.route('/')
 @app.route('/omnimap')
 def index():
-    print('INDEX')
     return app.send_static_file('omnimap.html')
 
 @app.route('/omnimap/api/cameras')
