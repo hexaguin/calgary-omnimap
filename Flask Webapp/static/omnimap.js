@@ -162,6 +162,11 @@ var highwayGoodStyle = {
 	weight: 8,
 	opacity: 0.8
 }
+var highwayWetStyle = {
+	color: '#0085AD',
+	weight: 8,
+	opacity: 0.8
+}
 var highwayMediumStyle = {
 	color: '#FFC600',
 	weight: 8,
@@ -198,6 +203,8 @@ abRoadConditions = L.realtime({
 				return highwayMediumStyle;
 			} else if (condition.includes('Cvd')) {
 				return highwayBadStyle;
+			} else if (condition.includes('Wet')) {
+				return highwayWetStyle;
 			} else if (condition.includes('Bare')) {
 				return highwayGoodStyle;
 			} else {
