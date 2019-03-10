@@ -86,7 +86,7 @@ var detourMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'car', markerColor: 'orange', iconColor: 'white'})
 };
 var roadworkMarkerOptions = {
-	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hard-hat', markerColor: 'orange', iconColor: 'white'}) //TODO find a better icon, like a standard worker+shovel one?
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hard-hat', markerColor: 'orange', iconColor: 'white'})
 };
 var closureMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'times-circle', markerColor: 'orange', iconColor: 'white'})
@@ -186,7 +186,7 @@ var roadConditionLayer = L.featureGroup.subGroup(drivingLayer);
 abRoadConditions = L.realtime({
 		url:'/omnimap/api/abwinterroads'
 	}, {
-		interval: 15 * 60 * 1000, //15 minutes. How often *does* this data get updated anyways? TODO find out and update this interval
+		interval: 15 * 60 * 1000, //15 minutes. How often *does* this data get updated?
 		start: false, //Don't automatically start loading geojson
 		getFeatureId: function(featureData){
 			return featureData.properties.EncodedPolyline; //I think this is the best I can do for IDs for now
@@ -397,7 +397,7 @@ plus15Layer.addTo(omnimap);
 parkAndBikeLayer.addTo(omnimap);
 cpaBikeLayer.addTo(omnimap);
 
-var baseTree = { //TODO does this mean I can get rid of the whole group subgroup thing? Probably not
+var baseTree = {
 	label: 'Base Maps',
 	children: [
 		{label: 'Street Map', layer: OpenStreetMap_Mapnik},

@@ -20,7 +20,7 @@ def make_camera_image_list(cameras):
         return '<div class=\"cam-slideshow cam-hidden\">' + '\n'.join([camera_link_format.format(x) for x in cameras]) + '</div>'
 
 #API endpoints
-def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff outside Calgary (probably just with a radius) for less client load
+def get_camera_geojson(): 
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
     traffic_cameras = traffic_cameras[traffic_cameras.apply(row_in_calgary, axis=1)] # Calgary only
@@ -29,10 +29,10 @@ def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff out
     traffic_cameras = traffic_cameras.rename(index=str, columns={"id_prefix": "id", "id": "sub_id"})
     
     camera_features = []
-    for index, row in traffic_cameras.iterrows(): # TODO check if I even need Pandas for this
+    for index, row in traffic_cameras.iterrows()
         row['popup'] = '<h2>' + row['name'] + '</h2>' + \
                 make_camera_image_list(row['url']) + '<br>' + \
-                str(row['description']) # TODO better handling of sets of differing descriptions
+                str(row['description'])
         feature = {
             'type': 'Feature',
             'geometry': {
@@ -50,7 +50,7 @@ def get_camera_geojson(): #TODO cache this using CRON. Also filter out stuff out
 
     return json.dumps(camera_dict)
 
-def get_ab_road_events_geojson(): #TODO: Split into detours/construction and incidents
+def get_ab_road_events_geojson():
     events_df = pd.read_json('https://511.alberta.ca/api/v2/get/event')
     events_df.columns = [s.lower() for s in events_df.columns]
     events_df = events_df[events_df.apply(row_in_calgary, axis=1)] # Only items in Calgary
