@@ -1,8 +1,17 @@
 import flask
+from flask_caching import Cache
 from werkzeug.serving import run_simple
 import omnimap
 
+config = {
+    "DEBUG": True,          # some Flask specific configs
+    "CACHE_TYPE": "simple", # Flask-Caching related configs
+    "CACHE_DEFAULT_TIMEOUT": 300
+}
+
 app = flask.Flask(__name__)
+app.config.from_mapping(config)
+cache = Cache(app)
 
 @app.route('/')
 @app.route('/omnimap')
@@ -14,6 +23,7 @@ def cameras():
     return omnimap.get_camera_geojson()
 
 @app.route('/omnimap/api/abwinterroads')
+@cache.cached(timeout=900) # 15 min cache. 511 only updates on a scale of hours anyways, frequent polling is wasteful.
 def ab_winter_roads():
     return omnimap.get_ab_roads_geojson()
 

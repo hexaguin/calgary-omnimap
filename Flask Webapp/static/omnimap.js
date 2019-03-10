@@ -186,8 +186,7 @@ var roadConditionLayer = L.featureGroup.subGroup(drivingLayer);
 abRoadConditions = L.realtime({
 		url:'/omnimap/api/abwinterroads'
 	}, {
-		interval: 15 * 60 * 1000, //15 minutes. How often *does* this data get updated?
-		start: false, //Don't automatically start loading geojson
+		interval: 15 * 60 * 1000, //15 minutes, matches server cache.
 		getFeatureId: function(featureData){
 			return featureData.properties.EncodedPolyline; //I think this is the best I can do for IDs for now
 		},
@@ -451,9 +450,9 @@ omnimap.on('overlayadd', function(layer) {
 		case limeBikeLayer:
 			limeBike.start();
 			break;
-		case roadConditionLayer:
-			abRoadConditions.start();
-			break;
+		// case roadConditionLayer:
+		// 	abRoadConditions.start();
+		// 	break;
 		default:
 			break;
 	}
@@ -463,9 +462,9 @@ omnimap.on('overlayremove', function(layer) {
 		case limeBikeLayer:
 			limeBike.stop();
 			break;
-		case roadConditionLayer:
-			abRoadConditions.stop();
-			break;
+		// case roadConditionLayer:
+		// 	abRoadConditions.stop();
+		// 	break;
 		default:
 			break;
 	}
