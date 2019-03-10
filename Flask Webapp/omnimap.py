@@ -19,6 +19,14 @@ def make_camera_image_list(cameras):
     else:
         return '<div class=\"cam-slideshow cam-hidden\">' + '\n'.join([camera_link_format.format(x) for x in cameras]) + '</div>'
 
+def polyline_in_bb(line, bb=calgary_bb):
+    in_bb = False
+    for c in line:
+        if bb[0][0] < c[0] < bb[0][1] and bb[1][0] < c[1] < bb[1][1]:
+            in_bb = True
+            break
+    return in_bb
+
 #API endpoints
 def get_camera_geojson(): 
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
@@ -103,9 +111,9 @@ def get_lime_geojson():
     }
     return json.dumps(bike_dict)
 
-def get_ab_roads_geojson(): # TODO: Limit to Calgary
+def get_ab_roads_geojson(): 
     ab_road_list = json.loads(requests.get('https://511.alberta.ca/api/v2/get/winterroads').text)
-    ab_road_features = [
+    ab_road_features = [ # Generate a gejson array of lines
         {
             'type': 'Feature',
             'geometry': {
@@ -116,9 +124,14 @@ def get_ab_roads_geojson(): # TODO: Limit to Calgary
         }
         for i in ab_road_list
     ]
+    calgary_road_features = []
+    for road in ab_road_features: # Filter for only Calgary. More CPU time when generating, but way less overall load on client and server if cached.
+        if (polyline_in_bb(road['geometry']['coordinates'])):
+            calgary_road_features.append(road)
+    
     road_dict = {
         'type': 'FeatureCollection',
-        'features': ab_road_features,
+        'features': calgary_road_features,
         'meta': {
             'generated': int(time.time())
         }
