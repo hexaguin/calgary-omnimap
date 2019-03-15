@@ -54,6 +54,33 @@ body {
 	color: #222222;
 }
 
+/* Routing */
+
+.leaflet-routing-container-hide .leaflet-routing-collapse-btn {
+	position: relative;
+	top: 2px;
+	left:-4px;
+	display: block;
+	width: 26px;
+	height: 23px;
+	font-size: 2em;
+	background: none;
+	text-align: center;
+}
+
+.leaflet-routing-container-hide .leaflet-routing-collapse-btn:before {
+	content: "\F002";  /* this is your text. You can also use UTF-8 character codes as I do here */
+	font-family: "Font Awesome 5 Free";
+	position:absolute;
+	top:0;
+	color: #000000;
+}
+
+.leaflet-routing-container-hide {
+	width: 48px !important;
+	height: 48px !important;
+}
+
 /* clusters */
 
 .marker-cluster {

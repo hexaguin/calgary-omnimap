@@ -1,3 +1,5 @@
+var mapboxToken = "sk.eyJ1IjoiaGV4YWd1aW4iLCJhIjoiY2p0YWhoOTliMGIxdTQzc3pzZnJjMnZ3dCJ9.Dp8AM1s5MunEf1f7nn9yEQ"
+
 var omnimap = L.map('map-container', {
 	zoomSnap: 0.25,
 	preferCanvas: false
@@ -405,6 +407,19 @@ limeBike = L.realtime({
 ██      ██ ██   ██ ██          ███████ ███████    ██     ██████  ██
 */
 
+// Routing
+
+routingControl = L.Routing.control({
+	router: L.Routing.mapbox(mapboxToken),
+	geocoder: L.Control.Geocoder.mapbox(mapboxToken, {
+		autocomplete: true,
+		geocodingQueryParams: {bbox: '-114.45260148479741,50.66596875349393,-113.6475824946525,51.317842186832365'}
+	}),
+	collapsible: true,
+}).addTo(omnimap);
+routingControl.hide();
+
+// Layer control
 
 // Enable default layers
 drivingLayer.addTo(omnimap);
