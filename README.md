@@ -26,3 +26,5 @@ Current features include:
 * GPS location and following
 
 The backend consists of a handful of Python functions to convert specific non-standard resources into GeoJSON to be consumed by Leaflet, while excluding data outside of Calgary (which greatly reduces client load). These functions simply return GeoJSON strings, meaning they should theoretically be compatible with any Python web server. A simple Flask app is included for development and testing.
+
+This project is still in development! Feel free to submit bug reports and suggestions to the issue tracker.
