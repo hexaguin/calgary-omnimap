@@ -410,7 +410,9 @@ limeBike = L.realtime({
 // Routing
 
 routingControl = L.Routing.control({
-	router: L.Routing.mapbox(mapboxToken),
+	router: L.Routing.mapbox(mapboxToken, {
+		profile: 'mapbox/driving-traffic'
+	}),
 	geocoder: L.Control.Geocoder.mapbox(mapboxToken, {
 		autocomplete: true,
 		geocodingQueryParams: {bbox: '-114.45260148479741,50.66596875349393,-113.6475824946525,51.317842186832365'}
@@ -418,6 +420,36 @@ routingControl = L.Routing.control({
 	collapsible: true,
 }).addTo(omnimap);
 routingControl.hide();
+
+// Inject controls for switching profiles. TODO try getting Bootstrap buttons (or button tags in general) to play nicely with leaflet?
+$('.leaflet-routing-geocoders').append(`
+	<div id="routing-modes">
+		<span id="routing-driving-button" class="routing-mode-button routing-mode-button-selected"><i class="fas fa-car"></i> Driving</span>
+		<span id="routing-cycling-button" class="routing-mode-button"><i class="fas fa-bicycle"></i> Cycling</span>
+		<span id="routing-walking-button" class="routing-mode-button"><i class="fas fa-walking"></i> Walking</span>
+	</div>
+`); // HTML for mode buttons
+
+$('#routing-driving-button').click(function(){
+	$('.routing-mode-button').removeClass('routing-mode-button-selected'); //Strip all buttons of active status
+	$(this).addClass('routing-mode-button-selected'); //Give active status to this button 
+	routingControl.getRouter().options.profile = "mapbox/driving-traffic"; //Switch profiles
+	routingControl.route(); //Update router
+});
+
+$('#routing-cycling-button').click(function(){
+	$('.routing-mode-button').removeClass('routing-mode-button-selected'); //Strip all buttons of active status
+	$(this).addClass('routing-mode-button-selected'); //Give active status to this button 
+	routingControl.getRouter().options.profile = "mapbox/cycling"; //Switch profiles
+	routingControl.route(); //Update router
+});
+
+$('#routing-walking-button').click(function(){
+	$('.routing-mode-button').removeClass('routing-mode-button-selected'); //Strip all buttons of active status
+	$(this).addClass('routing-mode-button-selected'); //Give active status to this button 
+	routingControl.getRouter().options.profile = "mapbox/walking"; //Switch profiles
+	routingControl.route(); //Update router
+});
 
 // Layer control
 
