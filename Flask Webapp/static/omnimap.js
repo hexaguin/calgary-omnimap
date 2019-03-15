@@ -424,9 +424,9 @@ routingControl.hide();
 // Inject controls for switching profiles. TODO try getting Bootstrap buttons (or button tags in general) to play nicely with leaflet?
 $('.leaflet-routing-geocoders').append(`
 	<div id="routing-modes">
-		<span id="routing-driving-button" class="routing-mode-button routing-mode-button-selected"><i class="fas fa-car"></i> Driving</span>
-		<span id="routing-cycling-button" class="routing-mode-button"><i class="fas fa-bicycle"></i> Cycling</span>
-		<span id="routing-walking-button" class="routing-mode-button"><i class="fas fa-walking"></i> Walking</span>
+		<span id="routing-driving-button" class="routing-mode-button routing-mode-button-selected"><i class="fas fa-car"></i> Drive</span>
+		<span id="routing-cycling-button" class="routing-mode-button"><i class="fas fa-bicycle"></i> Bike</span>
+		<span id="routing-walking-button" class="routing-mode-button"><i class="fas fa-walking"></i> Walk</span>
 	</div>
 `); // HTML for mode buttons
 
