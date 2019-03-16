@@ -124,6 +124,7 @@ body {
 	height: 20px;
 	padding: 1px;
 	padding-left: 2.5px;
+	cursor: pointer;
 }
 
 .leaflet-routing-geocoders input {
