@@ -430,25 +430,31 @@ $('.leaflet-routing-geocoders').append(`
 	</div>
 `); // HTML for mode buttons
 
+// Bind click events to routing mode buttons
 $('#routing-driving-button').click(function(){
 	$('.routing-mode-button').removeClass('routing-mode-button-selected'); //Strip all buttons of active status
 	$(this).addClass('routing-mode-button-selected'); //Give active status to this button 
 	routingControl.getRouter().options.profile = "mapbox/driving-traffic"; //Switch profiles
 	routingControl.route(); //Update router
 });
-
 $('#routing-cycling-button').click(function(){
 	$('.routing-mode-button').removeClass('routing-mode-button-selected'); //Strip all buttons of active status
 	$(this).addClass('routing-mode-button-selected'); //Give active status to this button 
 	routingControl.getRouter().options.profile = "mapbox/cycling"; //Switch profiles
 	routingControl.route(); //Update router
 });
-
 $('#routing-walking-button').click(function(){
 	$('.routing-mode-button').removeClass('routing-mode-button-selected'); //Strip all buttons of active status
 	$(this).addClass('routing-mode-button-selected'); //Give active status to this button 
 	routingControl.getRouter().options.profile = "mapbox/walking"; //Switch profiles
 	routingControl.route(); //Update router
+});
+
+// "Jump to GPS" button HACK using CSS psudoelements and pixel counting. 
+$('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:first-child', function(e){ //Bind to the entire container so that when the DOM shifts around inside the container we don't lose the binding
+	if (userMarker && e.pageX-$(this).offset().left < 24 && e.pageY-$(this).offset().top < 24) { //Only activate if the click is on the first 24x24 pixels (where our :before is)
+		routingControl.setWaypoints(userMarker._latlng, routingControl.getWaypoints()[1]);
+	}
 });
 
 // Layer control
