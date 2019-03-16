@@ -453,7 +453,9 @@ $('#routing-walking-button').click(function(){
 // "Jump to GPS" button HACK using CSS psudoelements and pixel counting. 
 $('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:first-child', function(e){ //Bind to the entire container so that when the DOM shifts around inside the container we don't lose the binding
 	if (userMarker && e.pageX-$(this).offset().left < 24 && e.pageY-$(this).offset().top < 24) { //Only activate if the click is on the first 24x24 pixels (where our :before is)
-		routingControl.setWaypoints(userMarker._latlng, routingControl.getWaypoints()[1]);
+		var waypoints = routingControl.getWaypoints();
+		waypoints[0] = userMarker._latlng;
+		routingControl.setWaypoints(waypoints);
 	}
 });
 
