@@ -56,6 +56,12 @@ body {
 
 /* Routing */
 
+/* Fixes and tweaks for routing UI */
+.leaflet-routing-add-waypoint {
+	border-bottom: 1px solid #ccc !important; /* Repair bottom from easybutton/routing machine conflict */
+	margin: 4px !important; /* Align with my own buttons (and generally space out better) */
+}
+
 .leaflet-routing-container-hide .leaflet-routing-collapse-btn {
 	position: relative;
 	top: 2px;
