@@ -13,6 +13,15 @@ var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
+var Mapbox_Streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={token}', {
+	name: 'Street Map (Modern)',
+	maxZoom: 20,
+	token: mapboxToken,
+	tileSize: 512, // Mapbox uses 512px tiles instead of 256px to save on API calls
+	zoomOffset: -1,
+	attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 });
@@ -28,7 +37,7 @@ var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all
 	maxZoom: 19
 });
 
-OpenStreetMap_Mapnik.addTo(omnimap); // Set OSM as the default basemap
+Mapbox_Streets.addTo(omnimap); // Set mapbox as the default basemap
 
 /*
 ██       █████  ██    ██ ███████ ██████  ███████
@@ -475,10 +484,13 @@ cpaBikeLayer.addTo(omnimap);
 var baseTree = {
 	label: 'Base Maps',
 	children: [
-		{label: 'Street Map', layer: OpenStreetMap_Mapnik},
+		{label: 'Street Map', children: [
+			{label: 'Modern', layer: Mapbox_Streets},
+			{label: 'Dark', layer: CartoDB_DarkMatter},
+			{label: 'Classic', layer: OpenStreetMap_Mapnik},
+		]},
 		{label: 'Bike Map', layer: Thunderforest_OpenCycleMap},
-		{label: 'Satellite', layer: Esri_WorldImagery},
-		{label: 'Dark', layer: CartoDB_DarkMatter}
+		{label: 'Satellite', layer: Esri_WorldImagery}
 	]
 };
 
