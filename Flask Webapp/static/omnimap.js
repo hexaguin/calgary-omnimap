@@ -205,6 +205,8 @@ abRoadConditions = L.realtime({
 		url:'/omnimap/api/abwinterroads'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes, matches server cache.
+		removeMissing: true,
+		start: false,
 		getFeatureId: function(featureData){
 			return featureData.properties.EncodedPolyline; //I think this is the best I can do for IDs for now
 		},
@@ -534,7 +536,6 @@ controlTree = L.control.layers.tree(baseTree, overlayTree, {
 	openedSymbol: '<i class="fas fa-minus-square"></i>'
 }).addTo(omnimap).collapseTree(true).collapseTree(false);
 
-// Logic to only poll Lime when visible
 //Switch background color to match basemaps. This makes loading less jarring, and also hides Blink and Webkit's CSS subpixel bug (Leaflet issue 6101)
 omnimap.on('baselayerchange', function(layer) { 
 	switch (layer.layer) {
@@ -558,14 +559,15 @@ omnimap.on('baselayerchange', function(layer) {
 
 $('#map-container').css('background-color', '#efe9e1'); //Mapbox background by default. NOTE must change if default basemap changes.
 
+// Logic to only poll heavy layers when visible
 omnimap.on('overlayadd', function(layer) {
 	switch (layer.layer) {
 		case limeBikeLayer:
 			limeBike.start();
 			break;
-		// case roadConditionLayer:
-		// 	abRoadConditions.start();
-		// 	break;
+		case roadConditionLayer:
+			abRoadConditions.start();
+			break;
 		default:
 			break;
 	}
@@ -575,9 +577,9 @@ omnimap.on('overlayremove', function(layer) {
 		case limeBikeLayer:
 			limeBike.stop();
 			break;
-		// case roadConditionLayer:
-		// 	abRoadConditions.stop();
-		// 	break;
+		case roadConditionLayer:
+			abRoadConditions.stop();
+			break;
 		default:
 			break;
 	}
