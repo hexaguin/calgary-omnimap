@@ -58,8 +58,14 @@ body {
 
 /* Fixes and tweaks for routing UI */
 .leaflet-routing-add-waypoint {
-	border-bottom: 1px solid #ccc !important; /* Repair bottom from easybutton/routing machine conflict */
+	border-bottom: 1px solid #cccccc !important; /* Repair bottom from easybutton/routing machine conflict */
 	margin: 4px !important; /* Align with my own buttons (and generally space out better) */
+	transition:0.25s; /* fade at same rate as other buttons */
+}
+
+.leaflet-routing-add-waypoint:hover {
+	border: 1px solid #cccccc !important; /* Again, easybutton/routing machine conflict patch */
+	background-color: #a5a7aa !important; /* Match mode butons */
 }
 
 .leaflet-routing-container-hide .leaflet-routing-collapse-btn {
@@ -101,13 +107,22 @@ body {
 	border: 1px solid #cccccc;
 	padding: 4px;
 	cursor: pointer;
+	transition:0.25s;
 }
 
 .routing-mode-button-selected {
 	color: #c8102e;
-	background-color: #343a40;
+	background-color: #323539;
 	border-radius: 4px;
 	font-weight: bolder;
+}
+
+.routing-mode-button:hover {
+	background-color: #a5a7aa;
+}
+
+.routing-mode-button-selected:hover {
+	background-color: #191C1F;
 }
 
 /* HACK to add consistent icons to the ever-changing routing input DOM */
