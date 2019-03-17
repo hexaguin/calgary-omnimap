@@ -1,7 +1,7 @@
 /* This is a modified version of the LRM CSS! Depends on FontAwesome 5, made for use with Omnimap. */
 
 .leaflet-routing-container, .leaflet-routing-error {
-	width: 320px;
+	width: 400px;
 	background-color: white;
 	padding-top: 4px;
 	transition: all 0.2s ease;
@@ -286,8 +286,7 @@ color: #888;
 @media only screen and (max-width: 640px) {
 	.leaflet-routing-container {
 		margin: 0 !important;
-		padding: 0 !important;
-		width: 100%;
+		width: 100vw;
 		height: 100%;
 	}
 }
