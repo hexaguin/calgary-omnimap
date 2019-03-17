@@ -2,7 +2,9 @@ var mapboxToken = "sk.eyJ1IjoiaGV4YWd1aW4iLCJhIjoiY2p0YWhoOTliMGIxdTQzc3pzZnJjMn
 
 var omnimap = L.map('map-container', {
 	zoomSnap: 0.25,
-	preferCanvas: false
+	maxBounds: [[50.4645218901, -114.9776127585],
+	           [51.5463584332, -113.1511357077]],
+	minZoom: 10
 }).setView([51.0486, -114.0708], 11);
 
 // Basemaps
@@ -78,7 +80,7 @@ trafficIncidents = L.realtime({
 		}
 	}
 ).addTo(incidentLayer);
-abIncidents = L.realtime({
+abIncidents = L.realtime({ //TODO prevent redundant call to API?
 		url: '/omnimap/api/abevents'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes

@@ -1,7 +1,7 @@
 import pandas as pd
 import json, requests, polyline, time
 
-calgary_bb = ((-114.359102, -113.778543), (50.822338, 51.25943)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
+calgary_bb = ((-114.9776127585, -113.1511357077), (50.4645218901, 51.5463584332)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
 def row_in_calgary(row):
     return calgary_bb[0][0] < row['longitude'] < calgary_bb[0][1] and calgary_bb[1][0] < row['latitude'] < calgary_bb[1][1]
 
