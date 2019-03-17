@@ -1,3 +1,5 @@
+/* This is a modified version of the LRM CSS! Depends on FontAwesome 5, made for use with Omnimap. */
+
 .leaflet-routing-container, .leaflet-routing-error {
 	width: 320px;
 	background-color: white;
@@ -7,8 +9,8 @@
 }
 
 .leaflet-control-container .leaflet-routing-container-hide {
-	width: 32px;
-	height: 32px;
+	width: 48px;
+	height: 48px;
 }
 
 .leaflet-routing-container h2 {
@@ -122,6 +124,17 @@ color: #888;
 	transition: background-color 0.2s ease;
 }
 
+.leaflet-routing-add-waypoint {
+	border-bottom: 1px solid #cccccc !important; /* Repair bottom from easybutton/routing machine conflict */
+	margin: 4px !important; /* Align with my own buttons (and generally space out better) */
+	transition:0.25s; /* fade at same rate as other buttons */
+}
+
+.leaflet-routing-add-waypoint:hover {
+	border: 1px solid #cccccc !important; /* Again, easybutton/routing machine conflict patch */
+	background-color: #a5a7aa !important; /* Match mode butons */
+}
+
 .leaflet-routing-add-waypoint:after {
 	content: '+';
 }
@@ -218,17 +231,39 @@ color: #888;
 }
 
 .leaflet-routing-collapse-btn:after {
-	content: '\00d7';
+	content: "\F00D";
+	font-family: "Font Awesome 5 Free";
+	font-size: 0.75em;
+	display: block;
+	width: 30px;
+	height: 30px;
+	padding: 6px;
+	margin: 2px;
+	padding-top: 2px;
+	text-align: center;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	color: #000000;
 }
 
 .leaflet-routing-container-hide .leaflet-routing-collapse-btn {
 	position: relative;
-	left: 4px;
-	top: 4px;
+	top: 2px;
+	left:-4px;
 	display: block;
 	width: 26px;
 	height: 23px;
-	background-image: url('routing-icon.png');
+	font-size: 2em;
+	background: none;
+	text-align: center;
+}
+
+.leaflet-routing-container-hide .leaflet-routing-collapse-btn:before {
+	content: "\F002";
+	font-family: "Font Awesome 5 Free";
+	position:absolute;
+	top:0;
+	color: #000000;
 }
 
 .leaflet-routing-container-hide .leaflet-routing-collapse-btn:after {

@@ -54,44 +54,7 @@ body {
 	color: #222222;
 }
 
-/* Routing */
-
-/* Fixes and tweaks for routing UI */
-.leaflet-routing-add-waypoint {
-	border-bottom: 1px solid #cccccc !important; /* Repair bottom from easybutton/routing machine conflict */
-	margin: 4px !important; /* Align with my own buttons (and generally space out better) */
-	transition:0.25s; /* fade at same rate as other buttons */
-}
-
-.leaflet-routing-add-waypoint:hover {
-	border: 1px solid #cccccc !important; /* Again, easybutton/routing machine conflict patch */
-	background-color: #a5a7aa !important; /* Match mode butons */
-}
-
-.leaflet-routing-container-hide .leaflet-routing-collapse-btn {
-	position: relative;
-	top: 2px;
-	left:-4px;
-	display: block;
-	width: 26px;
-	height: 23px;
-	font-size: 2em;
-	background: none;
-	text-align: center;
-}
-
-.leaflet-routing-container-hide .leaflet-routing-collapse-btn:before {
-	content: "\F002";
-	font-family: "Font Awesome 5 Free";
-	position:absolute;
-	top:0;
-	color: #000000;
-}
-
-.leaflet-routing-container-hide {
-	width: 48px !important;
-	height: 48px !important;
-}
+/* Routing additions */
 
 #routing-modes {
 	padding-bottom: 12px;
