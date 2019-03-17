@@ -535,6 +535,29 @@ controlTree = L.control.layers.tree(baseTree, overlayTree, {
 }).addTo(omnimap).collapseTree(true).collapseTree(false);
 
 // Logic to only poll Lime when visible
+//Switch background color to match basemaps. This makes loading less jarring, and also hides Blink and Webkit's CSS subpixel bug (Leaflet issue 6101)
+omnimap.on('baselayerchange', function(layer) { 
+	switch (layer.layer) {
+		case Mapbox_Streets:
+			$('#map-container').css('background-color', '#efe9e1');
+			break;
+		case OpenStreetMap_Mapnik:
+			$('#map-container').css('background-color', '#f2efe9');
+			break;
+		case CartoDB_DarkMatter:
+			$('#map-container').css('background-color', '#090909');
+			break;
+		case Thunderforest_OpenCycleMap:
+			$('#map-container').css('background-color', '#dedecd');
+			break;
+		case Esri_WorldImagery:
+			$('#map-container').css('background-color', '#808080');
+			break;
+	}
+});
+
+$('#map-container').css('background-color', '#efe9e1'); //Mapbox background by default. NOTE must change if default basemap changes.
+
 omnimap.on('overlayadd', function(layer) {
 	switch (layer.layer) {
 		case limeBikeLayer:
