@@ -15,6 +15,21 @@ body {
 }
 
 /* map global */
+.leaflet-control-layers-toggle {
+	background-image: none;
+}
+
+.leaflet-control-layers-toggle:after {
+	content: "\f5fd"; /*fa-layer-group*/
+	font-weight: 900;
+	font-family: "Font Awesome 5 Free";
+	color: #000000;
+	position: absolute;
+	left: 50%;
+	transform: translate(-12px, 4px); /*HACK to center the icon. I should replace this with less janky css later.*/
+	font-size: 2em;
+	text-align: center;
+}
 
 .leaflet-control-layers-overlays b {
 	/* font-size: 1.5em; */
