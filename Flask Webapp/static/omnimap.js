@@ -488,7 +488,7 @@ cpaBikeLayer.addTo(omnimap);
 var baseTree = {
 	label: 'Base Maps',
 	children: [
-		{label: 'Street Map', children: [
+		{label: '<b>Street Maps</b>', children: [
 			{label: 'Modern', layer: Mapbox_Streets},
 			{label: 'Dark', layer: CartoDB_DarkMatter},
 			{label: 'Classic', layer: OpenStreetMap_Mapnik},
