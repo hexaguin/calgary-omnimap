@@ -16,7 +16,6 @@ body {
 
 /* map global */
 .leaflet-control-layers-toggle {
-	background-image: none;
 	background-image: none !important;
 }
 
@@ -30,6 +29,14 @@ body {
 	transform: translate(-12px, 4px); /*HACK to center the icon. I should replace this with less janky css later.*/
 	font-size: 2em;
 	text-align: center;
+}
+
+.leaflet-control-attribution {
+	font-weight: 600;
+}
+
+.leaflet-control-attribution a {
+	color: #c8102e;
 }
 
 .leaflet-control-layers-overlays b {
