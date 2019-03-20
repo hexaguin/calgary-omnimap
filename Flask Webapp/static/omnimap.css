@@ -17,6 +17,7 @@ body {
 /* map global */
 .leaflet-control-layers-toggle {
 	background-image: none;
+	background-image: none !important;
 }
 
 .leaflet-control-layers-toggle:after {
