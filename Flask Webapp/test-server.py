@@ -35,5 +35,10 @@ def ab_road_events():
 def lime():
     return omnimap.get_lime_geojson()
 
+@app.route('/omnimap/api/parking')
+@cache.cached(timeout=43200) # 12 hours
+def parking():
+    return omnimap.get_parking_geojson()
+
 if __name__ == '__main__':
     app.run('0.0.0.0', 8083, use_reloader=True, use_debugger=True)

@@ -235,6 +235,22 @@ abRoadConditions = L.realtime({
 	}
 ).addTo(roadConditionLayer);
 
+var parkingMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'parking', markerColor: 'blue', iconColor: 'white'})
+};
+
+var parkingLayer = L.featureGroup.subGroup(drivingLayer);
+parking = L.realtime({
+		url:'/omnimap/api/parking'
+	}, {
+		interval: 60 * 60 * 1000, //hourly
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, parkingMarkerOptions).bindPopup(feature.properties.popup);
+		},
+	}
+).addTo(parkingLayer);
+
 /*
 ██     ██  █████  ██      ██   ██ ██ ███    ██  ██████
 ██     ██ ██   ██ ██      ██  ██  ██ ████   ██ ██
@@ -509,6 +525,7 @@ var overlayTree = {
 				{label: '<i class="fas fa-car p-orange"></i> Closures and Detours', layer: detourLayer},
 				{label: '<i class="fas fa-camera"></i> Traffic Cameras', layer: cameraLayer},
 				{label: '<i class="fas fa-square c-green"></i> Road Conditions', layer: roadConditionLayer},
+				{label: '<i class="fas fa-parking p-blue"></i> Parking', layer: parkingLayer},
 			]
 		},
 		{

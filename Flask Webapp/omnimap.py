@@ -1,5 +1,6 @@
 import pandas as pd
 import json, requests, polyline, time
+import xml.etree.ElementTree as ET
 
 calgary_bb = ((-114.9776127585, -113.1511357077), (50.4645218901, 51.5463584332)) #LONG LAT, not lat long, for Geojson consistency. (min, max) of each axis. 
 def row_in_calgary(row):
@@ -137,3 +138,43 @@ def get_ab_roads_geojson():
         }
     }
     return json.dumps(road_dict)
+
+def get_parking_geojson():
+    parking_tree = ET.ElementTree(ET.fromstring(requests.get("http://overpass-api.de/api/interpreter?data=node%5B%22amenity%22%3D%22parking%22%5D%2850%2E808104301205%2C%2D114%2E32922363281%2C51%2E226667902153%2C%2D113%2E80599975586%29%3Bout%3B%0A").text)) # Get parking OSM features from Overpass API
+    
+    nodes = []
+    for elem in parking_tree.iter():
+        if (elem.tag == 'node'):
+            tags = elem.attrib
+            for tag in elem.getchildren():
+                tags[tag.attrib['k']] = tag.attrib['v']
+            nodes.append(tags)
+    
+    for node in nodes:
+        popup_html = '<h2>Parking</h2>'
+        if 'name' in node:
+            popup_html += '<h3>' + node['name'] + '</h3>'
+        for tag in ['access', 'capacity', 'description', 'fee', 'operator', 'surface']:
+            if tag in node:
+                popup_html += tag + ': ' + node[tag] + '<br>'
+        if  'website' in node:
+            popup_html += '<a href="' + node['website'] + '" target="_blank"> website </a>'
+        node['popup'] = popup_html
+    parking_feature_list = []
+
+    for node in nodes:
+        parking_feature_list.append({
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [float(node['lon']), float(node['lat'])]
+            },
+            'properties': node
+        })
+
+    parking_dict = {
+        'type': 'FeatureCollection',
+        'features': parking_feature_list
+    }
+
+    return json.dumps(parking_dict)
