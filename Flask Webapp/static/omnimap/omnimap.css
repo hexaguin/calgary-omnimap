@@ -14,6 +14,14 @@ body {
 	font-weight: bold;
 }
 
+.nav-link:hover {
+	color: #780519;
+}
+
+.navbar-brand:hover {
+	color: #c8102e !important;
+}
+
 /* map global */
 .leaflet-control-layers-toggle {
 	background-image: none !important;
