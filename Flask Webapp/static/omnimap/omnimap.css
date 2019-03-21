@@ -201,3 +201,17 @@ body {
 .c-blue {
 	color: #0085AD;
 }
+
+/*Static Pages*/
+.a-red {
+	color: #c8102e;
+	text-decoration: underline;
+}
+.a-red:hover {
+	color: #c8102e;
+	text-decoration: none;
+}
+
+.a-red:visited {
+    color: #780519;
+}
