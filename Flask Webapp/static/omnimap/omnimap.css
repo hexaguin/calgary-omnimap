@@ -211,15 +211,15 @@ body {
 }
 
 /*Static Pages*/
-.a-red {
+.container a {
 	color: #c8102e;
 	text-decoration: underline;
 }
-.a-red:hover {
+.container a:hover {
 	color: #c8102e;
 	text-decoration: none;
 }
 
-.a-red:visited {
-    color: #780519;
+.container a:visited {
+	color: #c8102e;
 }
