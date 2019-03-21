@@ -449,6 +449,7 @@ routingControl = L.Routing.control({
 	collapsible: true,
 }).addTo(omnimap);
 routingControl.hide();
+$('leaflet-routing-container').attr('title','Navigation'); // Add title text to the button
 
 // Inject controls for switching profiles. TODO try getting Bootstrap buttons (or button tags in general) to play nicely with leaflet?
 $('.leaflet-routing-geocoders').append(`
