@@ -24,8 +24,11 @@
 		<br>
 		<div class="container">
 			<h1>About Calgary Omnimap</h1>
-			<p>Calgary Omnimap is a unified map of Calgary, designed to get you from point A to point B, whether you're walking around the Plus 15, riding a bike along the Glenmore Reservoir, or driving across town. Omnimap is built to work on everything from 4K TVs to budget smartphones.</p>
-			<p>Omnimap updates all of its data in real time (or as quickly as the data source allows), meaning it can also be used as a live dashboard.</p>
+			<p>Calgary Omnimap is a unified map of Calgary, designed to get you from point A to point B, whether you're walking around the Plus 15, riding a bike along the Glenmore Reservoir, or driving across town. Omnimap is built to work on everything from 4K TVs to budget smartphones. Omnimap updates all of its data in real time (or as quickly as the data source allows), meaning it can also be used as a live dashboard.</p>
+			<p>This project began its life about a few days before the <a href="https://civictechyyc.ca/">CivicTechYYC</a> 2019 hackathon. I wanted to build a single cross-platform tool that would combine the best features of <a href="https://play.google.com/store/apps/details?id=ca.calgary.bikewaysandpathways">City of Calgary Bikeways and Pathways</a>, <a href="https://play.google.com/store/apps/details?id=ca.calgary.calgaryroadconditions">	
+City of Calgary Roads</a>, <a href="https://511.alberta.ca/">511AB</a>, and the City's proposed Plus 15 app. At that time, Omnimap was a Jupyter notebook that manually generated maps, and as such was little more than a mock-up. During the hackathon, many ideas were brainstormed, some of which are now implemented in the version you see here.</p>
+			<p>After the hackathon, I rewrote the whole project using Flask and Leaflet. The Flask backend converts all data sources that aren't already available as GeoJSON to GeoJSON, meaning that future frontends could be built from using any mapping framework that supports GeoJSON. This rewrite is what became the current version of Omnimap.</p>
+			<p>Questions? Comments? Feel free to contact me at <a class="a-red" href="mailto:ryan@hattie.email">ryan@hattie.email</a>.</p>
 			<h2>Data sources</h2>
 			<p>Omnimap pulls data from the following sources:</p>
 			<h4>Overlay Data</h4>
@@ -42,7 +45,7 @@
 				<li><a href="https://www.openstreetmap.org/" class="a-red">OpenStreetMap</a></li>
 				<li><a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9" class="a-red">Esri World Imagery</a></li>
 			</ul>
-			<h2>Technologies Used</h2>
+			<!-- <h2>Technologies Used</h2> Oh hey, you found my commented out HTML! 
 			<p>Omnimap is built on the following technologies:</p>
 			<ul>
 				<li><a href="https://docs.mapbox.com/api/navigation/" class="a-red">Mapbox Navigation Service</a></li>
@@ -60,7 +63,8 @@
 				<li><a href="http://kenwheeler.github.io/slick/" class="a-red">Slick</a></li>
 				<li><a href="https://getbootstrap.com/" class="a-red">Bootstrap</a></li>
 				<li><a href="https://fontawesome.com/" class="a-red">Font Awesome</a></li>
-			</ul>
+				<li><a href="http://flask.pocoo.org/" class="a-red">Flask</a></li>
+			</ul> -->
 		</div>
 	</body>
 </html>
