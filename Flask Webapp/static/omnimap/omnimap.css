@@ -47,10 +47,6 @@ body {
 	color: #c8102e;
 }
 
-.leaflet-control-layers-overlays b {
-	/* font-size: 1.5em; */
-}
-
 .leaflet-popup-content h2 {
 	font-size: 2em;
 }

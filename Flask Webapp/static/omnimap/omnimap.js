@@ -1,4 +1,4 @@
-var mapboxToken = "sk.eyJ1IjoiaGV4YWd1aW4iLCJhIjoiY2p0YWhoOTliMGIxdTQzc3pzZnJjMnZ3dCJ9.Dp8AM1s5MunEf1f7nn9yEQ"
+var mapboxToken = 'sk.eyJ1IjoiaGV4YWd1aW4iLCJhIjoiY2p0YWhoOTliMGIxdTQzc3pzZnJjMnZ3dCJ9.Dp8AM1s5MunEf1f7nn9yEQ';
 
 var omnimap = L.map('map-container', {
 	zoomSnap: 0.25,
@@ -9,13 +9,13 @@ var omnimap = L.map('map-container', {
 
 // Basemaps
 
-var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+var basemapOSMMapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	name: 'Street Map',
 	maxZoom: 19,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
-var Mapbox_Streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token={token}', {
+var basemapMapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token={token}', {
 	name: 'Street Map (Modern)',
 	maxZoom: 20,
 	token: mapboxToken,
@@ -24,22 +24,22 @@ var Mapbox_Streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/street
 	attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
-var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+var basemapEsriWorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 });
 
-var Thunderforest_OpenCycleMap = L.tileLayer('https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=b49f917275a84bef912e3c72bc4612ef', {
+var basemapOpenCycleMap = L.tileLayer('https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=b49f917275a84bef912e3c72bc4612ef', {
 	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	maxZoom: 22
 });
 
-var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+var basemapCartoDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd',
 	maxZoom: 19
 });
 
-Mapbox_Streets.addTo(omnimap); // Set mapbox as the default basemap
+basemapMapboxStreets.addTo(omnimap); // Set mapbox as the default basemap
 
 /*
 ██       █████  ██    ██ ███████ ██████  ███████
@@ -124,7 +124,7 @@ trafficDetours = L.realtime({
 		}
 	}
 ).addTo(detourLayer);
-abDetours = L.realtime({ //TODO: New layer for closures
+abDetours = L.realtime({
 		url: '/omnimap/api/abevents'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes
@@ -154,7 +154,7 @@ cameras = L.realtime({
 		interval: 24 * 60 * 60 * 1000, //24 hours
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, cameraMarkerOptions).bindPopup(feature.properties.popup).on('popupopen', function(e){
+			return L.marker(latlng, cameraMarkerOptions).bindPopup(feature.properties.popup).on('popupopen', function(){
 				$('.cam-slideshow').not('.slick-initialized').slick({ //Exclude existing slideshows from old popups so we don't scare slick.
 					dots: true,
 					speed: 100
@@ -166,7 +166,7 @@ cameras = L.realtime({
 ).addTo(cameraLayer);
 
 setInterval(function(){
-		$(".cam-img img").each(function(index){
+		$(".cam-img img").each(function(){
 		$(this).attr("src", $(this).attr("src").split("?")[0] + '?' + new Date().getTime());
 })},15000); //Refreshes any visible cameras every 15 seconds
 
@@ -332,7 +332,7 @@ offLeash = L.realtime({
 		getFeatureId: function(featureData){
 			return featureData.properties.off_leash_area_id
 		},
-		style: function(featureData){
+		style: function(){
 			return offLeashStyle;
 		},
 		onEachFeature: function(feature, layer){
@@ -460,7 +460,7 @@ routingControl = L.Routing.control({
 routingControl.hide();
 $('leaflet-routing-container').attr('title','Navigation'); // Add title text to the button
 
-// Inject controls for switching profiles. TODO try getting Bootstrap buttons (or button tags in general) to play nicely with leaflet?
+// Inject controls for switching profiles.
 $('.leaflet-routing-geocoders').append(`
 	<div id="routing-modes">
 		<span id="routing-driving-button" class="routing-mode-button routing-mode-button-selected"><i class="fas fa-car"></i> Drive</span>
@@ -515,12 +515,12 @@ var baseTree = {
 	label: 'Base Maps',
 	children: [
 		{label: '<b>Street Maps</b>', children: [
-			{label: 'Modern', layer: Mapbox_Streets},
-			{label: 'Dark', layer: CartoDB_DarkMatter},
-			{label: 'Classic', layer: OpenStreetMap_Mapnik},
+			{label: 'Modern', layer: basemapMapboxStreets},
+			{label: 'Dark', layer: basemapCartoDark},
+			{label: 'Classic', layer: basemapOSMMapnik},
 		]},
-		{label: 'Bike Map', layer: Thunderforest_OpenCycleMap},
-		{label: 'Satellite', layer: Esri_WorldImagery}
+		{label: 'Bike Map', layer: basemapOpenCycleMap},
+		{label: 'Satellite', layer: basemapEsriWorldImagery}
 	]
 };
 
@@ -566,19 +566,19 @@ controlTree = L.control.layers.tree(baseTree, overlayTree, {
 //Switch background color to match basemaps. This makes loading less jarring, and also hides Blink and Webkit's CSS subpixel bug (Leaflet issue 6101)
 omnimap.on('baselayerchange', function(layer) { 
 	switch (layer.layer) {
-		case Mapbox_Streets:
+		case basemapMapboxStreets:
 			$('#map-container').css('background-color', '#efe9e1');
 			break;
-		case OpenStreetMap_Mapnik:
+		case basemapOSMMapnik:
 			$('#map-container').css('background-color', '#f2efe9');
 			break;
-		case CartoDB_DarkMatter:
+		case basemapCartoDark:
 			$('#map-container').css('background-color', '#090909');
 			break;
-		case Thunderforest_OpenCycleMap:
+		case basemapOpenCycleMap:
 			$('#map-container').css('background-color', '#dedecd');
 			break;
-		case Esri_WorldImagery:
+		case basemapEsriWorldImagery:
 			$('#map-container').css('background-color', '#808080');
 			break;
 	}
@@ -642,7 +642,7 @@ function onLocationFound(e) {
 omnimap.on('locationfound', onLocationFound);
 omnimap.locate({setView: false, watch: true, enableHighAccuracy: true}); //Start repeat tracking
 
-//GPS Follow Toggle 
+// GPS Follow Toggle 
 var gpsToggle = L.easyButton({
 	states: [{
 	stateName: 'enable-gps',
@@ -669,7 +669,7 @@ var gpsToggle = L.easyButton({
 	}]
 }).addTo(omnimap);
 
-omnimap.on("dragstart", function () { //Stop following GPS when the user pans
+omnimap.on('dragstart', function () { // Stop following GPS when the user pans
 	followingGps = false;
 	gpsToggle.state('enable-gps');
 });
