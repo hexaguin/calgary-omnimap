@@ -235,9 +235,6 @@ abRoadConditions = L.realtime({
 	}
 ).addTo(roadConditionLayer);
 
-var parkingMarkerOptions = {
-	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'parking', markerColor: 'blue', iconColor: 'white'})
-};
 
 var parkingLayer = L.featureGroup.subGroup(drivingLayer);
 parking = L.realtime({
@@ -245,9 +242,21 @@ parking = L.realtime({
 	}, {
 		interval: 60 * 60 * 1000, //hourly
 		removeMissing: true,
-		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, parkingMarkerOptions).bindPopup(feature.properties.popup);
-		},
+		onEachFeature: function(feature, layer){
+			var popup = '<h2>Parking</h2>'
+			if (feature.properties.name !== undefined) {
+				popup += '<h3>' + feature.properties.name + '</h3>'
+			}
+			['access', 'capacity', 'description', 'fee', 'operator', 'surface'].forEach(function(key) { // Itterate over all relevant properties
+				if (feature.properties[key] !== undefined) {
+					popup += key + ': ' + feature.properties[key] + '<br>'
+				}
+			})
+			if (feature.properties.website !== undefined) {
+				popup += '<a href="' + feature.properties.website + '" target="_blank"> website </a>'
+			}
+			layer.bindPopup(popup)
+		}
 	}
 ).addTo(parkingLayer);
 
