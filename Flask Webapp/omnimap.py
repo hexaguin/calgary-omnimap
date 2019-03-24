@@ -1,3 +1,6 @@
+"""
+Generates GeoJSON strings to be served to the Calgary Omnimap client.
+"""
 import time
 import json
 import requests
@@ -22,10 +25,12 @@ calgary_bb = ((-114.9776127585, -113.1511357077),
 
 
 def row_in_calgary(row):
+    """Returns True if a given Pandas row is inside calgary_bb."""
     return calgary_bb[0][0] < row['longitude'] < calgary_bb[0][1] and calgary_bb[1][0] < row['latitude'] < calgary_bb[1][1]
 
 
 def set_or_value(x):
+    """If given a set with one member, returns that member. Otherwise, returns the original set as a list."""
     if len(set(x)) > 1:
         return list(set(x))
     else:
@@ -37,6 +42,7 @@ camera_link_format = '<a class=\"cam-img\" href=\"{0}\" target=\"_blank\"> <img 
 
 
 def make_camera_image_list(cameras):
+    """Converts a list of cameras to a slideshow for multiple cameras or a single image for one."""
     if type(cameras) is str:
         return camera_link_format.format(cameras)
     else:
@@ -44,6 +50,7 @@ def make_camera_image_list(cameras):
 
 
 def polyline_in_bb(line, bb=calgary_bb):
+    """Checks if a given polyline overlaps with a bounding box. Used to crop large polyline data."""
     in_bb = False
     for c in line:
         if bb[0][0] < c[0] < bb[0][1] and bb[1][0] < c[1] < bb[1][1]:
@@ -60,6 +67,7 @@ def polyline_in_bb(line, bb=calgary_bb):
 
 
 def get_camera_geojson():
+    """Generates a Geojson file, complete with popup HTML, of cameras from the 511AB API."""
     traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
     traffic_cameras = traffic_cameras[traffic_cameras.apply(row_in_calgary, axis=1)]  # Calgary only
@@ -94,6 +102,7 @@ def get_camera_geojson():
 
 
 def get_ab_road_events_geojson():
+    """Generates a GeoJSON file containing all provincial "road events" from 511AB"""
     events_df = pd.read_json('https://511.alberta.ca/api/v2/get/event')
     events_df.columns = [s.lower() for s in events_df.columns]
     events_df = events_df[events_df.apply(row_in_calgary, axis=1)]  # Only items in Calgary
@@ -123,6 +132,7 @@ def get_ab_road_events_geojson():
 
 
 def get_lime_geojson():
+    """Generates a GeoJSON file of all available Lime bikes in Calgary from the Lime API."""
     bikes = json.loads(requests.get('https://lime.bike/api/partners/v1/gbfs_calgary/free_bike_status.json').text)
     bike_list = [
         {
@@ -146,6 +156,7 @@ def get_lime_geojson():
 
 
 def get_ab_roads_geojson():
+    """Generates GeoJson polylines for all provincial road conditions in Calgary from 511AB."""
     ab_road_list = json.loads(requests.get('https://511.alberta.ca/api/v2/get/winterroads').text)
     ab_road_features = [  # Generate a gejson array of lines
         {
@@ -174,6 +185,7 @@ def get_ab_roads_geojson():
 
 
 def get_parking_geojson():
+    """Generates a GeoJSON file of all OpenStreetMap features matching 'amenity=parking' in Calgary."""
     parking = overpass.API().get('way["amenity"="parking"](50.859710441584,-114.27978515625,51.218927150951,-113.86505126953);', verbosity='geom')
     for i in parking['features']:
         if i['geometry']['type'] == 'LineString' and len(i['geometry']['coordinates']) >= 4:  # WORKAROUND to fix overpass lib's faulty polygon way handling
