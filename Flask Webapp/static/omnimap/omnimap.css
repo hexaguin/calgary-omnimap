@@ -172,6 +172,24 @@ body {
 	border-color: #2a412580;
 }
 
+.parking-cluster-small {
+	background-color: #0085AD;
+	color: #FFFFFF;
+	border-color: #688c9c80;
+}
+
+.parking-cluster-med {
+	background-color: #004E66;
+	color: #FFFFFF;
+	border-color: #688c9c80;
+}
+
+.parking-cluster-large {
+	background-color: #033140;
+	color: #FFFFFF;
+	border-color: #688c9c80;
+}
+
 /* colors */
 
 .p-orange { /*popup colors from AwesomeMarkers*/

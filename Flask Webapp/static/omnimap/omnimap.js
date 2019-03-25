@@ -236,12 +236,35 @@ abRoadConditions = L.realtime({
 ).addTo(roadConditionLayer);
 
 
+var parkingMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'parking', markerColor: 'blue', iconColor: 'white'})
+}
+var parkingClusterOptions = {
+	iconCreateFunction: function(cluster) {
+		var count = cluster.getChildCount();
+		if (count > 50) { // Large
+			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster parking-cluster-large', iconSize: new L.Point(40, 40) });
+		} else if (count > 10) { // Medium
+			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster parking-cluster-med', iconSize: new L.Point(40, 40) });
+		} else { // Small
+			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster parking-cluster-small', iconSize: new L.Point(40, 40) });
+		}
+	},
+	maxClusterRadius: 80,
+	disableClusteringAtZoom: 15,
+	animate: false
+}
+
 var parkingLayer = L.featureGroup.subGroup(drivingLayer);
+var parkingDeflated = L.deflate({minSize: 5, markerCluster: true, markerOptions: parkingMarkerOptions, markerClusterOptions: parkingClusterOptions});
+parkingDeflated.addTo(parkingLayer);
+
 parking = L.realtime({
 		url:'/omnimap/api/parking'
 	}, {
 		interval: 60 * 60 * 1000, //hourly
 		removeMissing: true,
+		container: parkingDeflated,
 		onEachFeature: function(feature, layer){
 			var popup = '<h2>Parking</h2>'
 			if (feature.properties.name !== undefined) {
