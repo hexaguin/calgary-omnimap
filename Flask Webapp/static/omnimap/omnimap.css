@@ -67,6 +67,17 @@ body {
 	text-transform: capitalize;
 }
 
+
+/* Layer tree */
+
+.tree-disabled {
+	color: #808080;
+}
+
+.tree-disabled .fas {
+	color: #808080;
+}
+
 /* cameras */
 
 .cam-slideshow {

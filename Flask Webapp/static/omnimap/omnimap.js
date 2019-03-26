@@ -552,31 +552,31 @@ var overlayTree = {
 	label: 'Overlays',
 	children: [
 		{
-			label: '<b>Driving</b>',
+			label: '<b id="l-driving">Driving</b>',
 			layer: drivingLayer,
 			children: [
-				{label: '<i class="fas fa-car-crash p-red"></i> Traffic Incidents', layer: incidentLayer},
-				{label: '<i class="fas fa-car p-orange"></i> Closures and Detours', layer: detourLayer},
-				{label: '<i class="fas fa-camera"></i> Traffic Cameras', layer: cameraLayer},
-				{label: '<i class="fas fa-square c-green"></i> Road Conditions', layer: roadConditionLayer},
-				{label: '<i class="fas fa-parking p-blue"></i> Parking', layer: parkingLayer},
+				{label: '<span id="l-incidents"><i class="fas fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
+				{label: '<span id="l-detour"><i class="fas fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
+				{label: '<span id="l-camera"><i class="fas fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
+				{label: '<span id="l-conditions"><i class="fas fa-square c-green"></i> Road Conditions</span>', layer: roadConditionLayer},
+				{label: '<span id="l-parking"><i class="fas fa-parking p-blue"></i> Parking</span>', layer: parkingLayer},
 			]
 		},
 		{
-			label: '<b>Walking</b>',
+			label: '<b id="l-walking">Walking</b>',
 			layer: walkingLayer,
 			children: [
-				{label: '<i class="fas fa-square c-blue"></i> Plus 15', layer: plus15Layer},
-				{label: '<i class="fas fa-square c-green"></i> Off Leash Areas', layer: offLeashLayer}
+				{label: '<span id="l-plus15"><i class="fas fa-square c-blue"></i> Plus 15</span>', layer: plus15Layer},
+				{label: '<span id="l-offleash"><i class="fas fa-square c-green"></i> Off Leash Areas</span>', layer: offLeashLayer}
 			]
 		},
 		{
-			label: '<b>Cycling</b>',
+			label: '<b id="l-cycling">Cycling</b>',
 			layer: bikeLayer,
 			children: [
-				{label: '<i class="fas fa-bicycle p-blue"></i> Park and Bike', layer: parkAndBikeLayer},
-				{label: '<i class="fas fa-bicycle p-darkgreen"></i> CPA Bike Parking', layer: cpaBikeLayer},
-				{label: '<i class="fas fa-bicycle p-green"></i> Lime Rental Bikes', layer: limeBikeLayer}
+				{label: '<span id="l-parkandbike"><i class="fas fa-bicycle p-blue"></i> Park and Bike</span>', layer: parkAndBikeLayer},
+				{label: '<span id="l-cpabike"><i class="fas fa-bicycle p-darkgreen"></i> CPA Bike Parking</span>', layer: cpaBikeLayer},
+				{label: '<span id="l-lime"><i class="fas fa-bicycle p-green"></i> Lime Rental Bikes</span>', layer: limeBikeLayer}
 			]
 		}
 	]
@@ -585,7 +585,24 @@ var overlayTree = {
 controlTree = L.control.layers.tree(baseTree, overlayTree, {
 	closedSymbol: '<i class="fas fa-plus-square"></i>',
 	openedSymbol: '<i class="fas fa-minus-square"></i>'
-}).addTo(omnimap).collapseTree(true).collapseTree(false);
+}).addTo(omnimap).collapseTree(true).collapseTree(false); // Add to map and collapse both the overlay and basemap menus.
+
+
+function updateLayerTreeShading(tree, disabled) { // Tree to check, and whether the parent of this tree is disabled
+	if (tree.children !== undefined) {
+		tree.children.forEach( branch => {
+			branchID = branch.label.split('id="')[1].split('"')[0]; // HTML ID of the layer's label
+			var branchDisabled = !omnimap.hasLayer(omnimap._layers[branch.layer._leaflet_id]) || disabled; // If this branch or the parent is disabled
+			if (branchDisabled) {
+				$('#'+branchID).addClass('tree-disabled');
+			} else {
+				$('#'+branchID).removeClass('tree-disabled');
+			}
+			updateLayerTreeShading(branch, branchDisabled); // Recurse into child nodes
+		});
+	}
+}
+updateLayerTreeShading(controlTree._overlaysTree, false); // Perform initial update of tree
 
 //Switch background color to match basemaps. This makes loading less jarring, and also hides Blink and Webkit's CSS subpixel bug (Leaflet issue 6101)
 omnimap.on('baselayerchange', function(layer) { 
@@ -608,10 +625,12 @@ omnimap.on('baselayerchange', function(layer) {
 	}
 });
 
-$('#map-container').css('background-color', '#efe9e1'); //Mapbox background by default. NOTE must change if default basemap changes.
+$('#map-container').css('background-color', '#efe9e1'); // Mapbox background by default. NOTE must change if default basemap changes.
 
 // Logic to only poll heavy layers when visible
 omnimap.on('overlayadd', function(layer) {
+	updateLayerTreeShading(controlTree._overlaysTree, false); // Update the tree's "disabled" shading
+	
 	switch (layer.layer) {
 		case limeBikeLayer:
 			limeBike.start();
@@ -627,6 +646,8 @@ omnimap.on('overlayadd', function(layer) {
 	}
 });
 omnimap.on('overlayremove', function(layer) {
+	updateLayerTreeShading(controlTree._overlaysTree, false); // Update the tree's "disabled" shading
+	
 	switch (layer.layer) {
 		case limeBikeLayer:
 			limeBike.stop();
