@@ -251,8 +251,7 @@ var parkingClusterOptions = {
 		}
 	},
 	maxClusterRadius: 80,
-	disableClusteringAtZoom: 15,
-	animate: false
+	disableClusteringAtZoom: 15
 }
 
 var parkingLayer = L.featureGroup.subGroup(drivingLayer);
