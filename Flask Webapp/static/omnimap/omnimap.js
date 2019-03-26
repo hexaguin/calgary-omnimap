@@ -555,28 +555,28 @@ var overlayTree = {
 			label: '<b id="l-driving">Driving</b>',
 			layer: drivingLayer,
 			children: [
-				{label: '<span id="l-incidents"><i class="fas fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
-				{label: '<span id="l-detour"><i class="fas fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
-				{label: '<span id="l-camera"><i class="fas fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
-				{label: '<span id="l-conditions"><i class="fas fa-square c-green"></i> Road Conditions</span>', layer: roadConditionLayer},
-				{label: '<span id="l-parking"><i class="fas fa-parking p-blue"></i> Parking</span>', layer: parkingLayer},
+				{label: '<span id="l-incidents"><i class="fas fa-fw fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
+				{label: '<span id="l-detour"><i class="fas fa-fw fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
+				{label: '<span id="l-camera"><i class="fas fa-fw fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
+				{label: '<span id="l-conditions"><i class="fas fa-fw fa-square c-green"></i> Road Conditions</span>', layer: roadConditionLayer},
+				{label: '<span id="l-parking"><i class="fas fa-fw fa-parking p-blue"></i> Parking</span>', layer: parkingLayer},
 			]
 		},
 		{
 			label: '<b id="l-walking">Walking</b>',
 			layer: walkingLayer,
 			children: [
-				{label: '<span id="l-plus15"><i class="fas fa-square c-blue"></i> Plus 15</span>', layer: plus15Layer},
-				{label: '<span id="l-offleash"><i class="fas fa-square c-green"></i> Off Leash Areas</span>', layer: offLeashLayer}
+				{label: '<span id="l-plus15"><i class="fas fa-fw fa-square c-blue"></i> Plus 15</span>', layer: plus15Layer},
+				{label: '<span id="l-offleash"><i class="fas fa-fw fa-square c-green"></i> Off Leash Areas</span>', layer: offLeashLayer}
 			]
 		},
 		{
 			label: '<b id="l-cycling">Cycling</b>',
 			layer: bikeLayer,
 			children: [
-				{label: '<span id="l-parkandbike"><i class="fas fa-bicycle p-blue"></i> Park and Bike</span>', layer: parkAndBikeLayer},
-				{label: '<span id="l-cpabike"><i class="fas fa-bicycle p-darkgreen"></i> CPA Bike Parking</span>', layer: cpaBikeLayer},
-				{label: '<span id="l-lime"><i class="fas fa-bicycle p-green"></i> Lime Rental Bikes</span>', layer: limeBikeLayer}
+				{label: '<span id="l-parkandbike"><i class="fas fa-fw fa-bicycle p-blue"></i> Park and Bike</span>', layer: parkAndBikeLayer},
+				{label: '<span id="l-cpabike"><i class="fas fa-fw fa-bicycle p-darkgreen"></i> CPA Bike Parking</span>', layer: cpaBikeLayer},
+				{label: '<span id="l-lime"><i class="fas fa-fw fa-bicycle p-green"></i> Lime Rental Bikes</span>', layer: limeBikeLayer}
 			]
 		}
 	]
