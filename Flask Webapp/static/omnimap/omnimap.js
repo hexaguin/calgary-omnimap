@@ -468,6 +468,8 @@ limeBike = L.realtime({
 ██      ██ ██   ██ ██          ███████ ███████    ██     ██████  ██
 */
 
+L.control.scale().addTo(omnimap); //Scale
+
 // Routing
 
 routingControl = L.Routing.control({
