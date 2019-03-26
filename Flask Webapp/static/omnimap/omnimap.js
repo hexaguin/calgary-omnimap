@@ -264,6 +264,7 @@ parking = L.realtime({
 	}, {
 		interval: 60 * 60 * 1000, //hourly
 		removeMissing: true,
+		start: false,
 		container: parkingDeflated,
 		onEachFeature: function(feature, layer){
 			var popup = '<h2>Parking</h2>'
@@ -618,6 +619,9 @@ omnimap.on('overlayadd', function(layer) {
 		case roadConditionLayer:
 			abRoadConditions.start();
 			break;
+		case parkingLayer:
+			parking.start();
+			break;
 		default:
 			break;
 	}
@@ -629,6 +633,9 @@ omnimap.on('overlayremove', function(layer) {
 			break;
 		case roadConditionLayer:
 			abRoadConditions.stop();
+			break;
+		case parkingLayer:
+			parking.stop();
 			break;
 		default:
 			break;
