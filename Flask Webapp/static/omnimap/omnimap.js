@@ -243,11 +243,14 @@ var parkingClusterOptions = {
 	iconCreateFunction: function(cluster) {
 		var count = cluster.getChildCount();
 		if (count > 50) { // Large
-			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster parking-cluster-large', iconSize: new L.Point(40, 40) });
+			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() +
+			                         '</span></div>', className: 'marker-cluster parking-cluster-large', iconSize: new L.Point(40, 40) });
 		} else if (count > 10) { // Medium
-			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster parking-cluster-med', iconSize: new L.Point(40, 40) });
+			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() +
+			                         '</span></div>', className: 'marker-cluster parking-cluster-med', iconSize: new L.Point(40, 40) });
 		} else { // Small
-			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster parking-cluster-small', iconSize: new L.Point(40, 40) });
+			return L.divIcon({ html: '<div><i class="fas fa-parking"></i><br><span>' + cluster.getChildCount() +
+			                         '</span></div>', className: 'marker-cluster parking-cluster-small', iconSize: new L.Point(40, 40) });
 		}
 	},
 	maxClusterRadius: 80,
@@ -258,7 +261,8 @@ var parkingLayer = L.featureGroup.subGroup(drivingLayer);
 var parkingDeflated = L.deflate({minSize: 5, markerCluster: true, markerOptions: parkingMarkerOptions, markerClusterOptions: parkingClusterOptions});
 parkingDeflated.addTo(parkingLayer);
 
-var parkingStripesFree = new L.StripePattern({angle: 45, color: '#3388ff'});
+// WARN Leaflet.Pattern depends on deprecated features and SVG rendering. Replace with another shading method if updating Leaflet.
+var parkingStripesFree = new L.StripePattern({angle: 45, color: '#3388ff'}); 
 parkingStripesFree.addTo(omnimap);
 var parkingStripesPaid = new L.StripePattern({angle: 45, color: '#1B3FBD'});
 parkingStripesPaid.addTo(omnimap);
@@ -456,11 +460,14 @@ var limeBikeClusters = L.markerClusterGroup({
 	iconCreateFunction: function(cluster) {
 		var count = cluster.getChildCount();
 		if (count > 50) { // Large
-			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster lime-cluster-large', iconSize: new L.Point(40, 40) });
+			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>',
+			                   className: 'marker-cluster lime-cluster-large', iconSize: new L.Point(40, 40) });
 		} else if (count > 10) { // Medium
-			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster lime-cluster-med', iconSize: new L.Point(40, 40) });
+			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>',
+			                   className: 'marker-cluster lime-cluster-med', iconSize: new L.Point(40, 40) });
 		} else { // Small
-			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster lime-cluster-small', iconSize: new L.Point(40, 40) });
+			return L.divIcon({ html: '<div><i class="fas fa-bicycle"></i><br><span>' + cluster.getChildCount() + '</span></div>',
+			                   className: 'marker-cluster lime-cluster-small', iconSize: new L.Point(40, 40) });
 		}
 	},
 	maxClusterRadius: 50
@@ -701,7 +708,8 @@ function panToUser() {
 function onLocationFound(e) {
 	var radius = e.accuracy / 2;
 	if (!userMarker) {
-		userMarker = L.circleMarker(e.latlng, {color: 'white', fillColor: '#006298', fillOpacity: 1, radius: 8, weight: 2}).addTo(omnimap).bindPopup("You are within " + radius + " meters of this point");
+		userMarker = L.circleMarker(e.latlng, {color: 'white', fillColor: '#006298', fillOpacity: 1, radius: 8, weight: 2}).addTo(omnimap)
+			.bindPopup("You are within " + radius + " meters of this point");
 	} else {
 		userMarker.setLatLng(e.latlng);
 	}
