@@ -258,6 +258,11 @@ var parkingLayer = L.featureGroup.subGroup(drivingLayer);
 var parkingDeflated = L.deflate({minSize: 5, markerCluster: true, markerOptions: parkingMarkerOptions, markerClusterOptions: parkingClusterOptions});
 parkingDeflated.addTo(parkingLayer);
 
+var parkingStripesFree = new L.StripePattern({angle: 45, color: '#3388ff'});
+parkingStripesFree.addTo(omnimap);
+var parkingStripesPaid = new L.StripePattern({angle: 45, color: '#1B3FBD'});
+parkingStripesPaid.addTo(omnimap);
+
 parking = L.realtime({
 		url:'/omnimap/api/parking'
 	}, {
@@ -265,6 +270,23 @@ parking = L.realtime({
 		removeMissing: true,
 		start: false,
 		container: parkingDeflated,
+		style: function(feature) {
+			style = {
+				weight: 2,
+				color: '#3388ff'
+			}
+			if (feature.properties.fee == 'yes') {
+				style.color = '#1B3FBD'
+			}
+			if (feature.properties.access == 'private') {
+				if (feature.properties.fee == 'yes') {
+					style.fillPattern = parkingStripesPaid;
+				} else {
+					style.fillPattern = parkingStripesFree;
+				}
+			}
+			return style
+		},
 		onEachFeature: function(feature, layer){
 			var popup = '<h2>Parking</h2>'
 			if (feature.properties.name !== undefined) {
