@@ -37,8 +37,15 @@ def set_or_value(x):
         return x.iloc[0]
 
 
+def name_from_file_url(file_url):
+    """Returns the filename, without extension, from a URL in a DF row.
+    For example, http://trafficcam.calgary.ca/loc32.jpg becomes loc32."""
+    id = file_url.split('/')[-1].split('.')[0]
+    return id
+
+
 # HTML format string for an image that links to its own source
-camera_link_format = '<a class=\"cam-img\" href=\"{0}\" target=\"_blank\"> <img src=\"{0}\" width=100%> </a>'
+camera_link_format = '<a class=\"cam-img\" href=\"{0}\" target=\"_blank\"> <img src=\"{0}\" width=300 height=100%> </a>'
 
 
 def make_camera_image_list(cameras):
@@ -68,9 +75,24 @@ def polyline_in_bb(line, bb=calgary_bb):
 
 def get_camera_geojson():
     """Generates a Geojson file, complete with popup HTML, of cameras from the 511AB API."""
-    traffic_cameras = pd.read_json("https://511.alberta.ca/api/v2/get/cameras")
+    # Load AB camera list
+    traffic_cameras = pd.read_json('https://511.alberta.ca/api/v2/get/cameras')
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
     traffic_cameras = traffic_cameras[traffic_cameras.apply(row_in_calgary, axis=1)]  # Calgary only
+
+    # Load Calgary camera list
+    calgary_cameras = pd.read_csv('https://data.calgary.ca/resource/35kd-jzrv.csv')
+    calgary_cameras['id'] = calgary_cameras['url'].apply(name_from_file_url)
+    calgary_cameras.set_index('id', inplace=True)
+
+    for index, row in traffic_cameras.iterrows():
+        if 'AB--loc' in row['id']:  # Check if the ID matches the City of Calgary's id pattern
+            id = row['id'].split('--')[1].split('C')[0]
+            if id in calgary_cameras.index:
+                traffic_cameras.at[index, 'url'] = calgary_cameras.at[id, 'url']
+            else:
+                print('Could not find camera ' + id)
+
     traffic_cameras['id_prefix'] = [s.split('.')[0] for s in traffic_cameras['id']]
     traffic_cameras = traffic_cameras.groupby('id_prefix').aggregate(set_or_value).reset_index()  # Aggregate any entries of the same camera ID prefix for multiple rows (usually 3 camera setups at interchanges). These entries consistently share the same lat/long.
     traffic_cameras = traffic_cameras.rename(index=str, columns={"id_prefix": "id", "id": "sub_id"})
