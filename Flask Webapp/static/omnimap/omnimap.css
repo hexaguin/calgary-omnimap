@@ -127,7 +127,7 @@ body {
 }
 
 /* HACK to add consistent icons to the ever-changing routing input DOM */
-.leaflet-routing-geocoder:before {  /* Icon for 2nd textbox */
+.leaflet-routing-geocoder:before {
 	content: " ";
 	width: 20px;
 	display: inline-block;
@@ -135,7 +135,7 @@ body {
 	margin: 2px;
 }
 
-.leaflet-routing-geocoder:first-child:before { 
+.leaflet-routing-geocoder:first-child:before {  /*GPS autofill button*/
 	content: "\f05b";
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
@@ -145,8 +145,13 @@ body {
 	border: 1px solid #cccccc;
 	height: 20px;
 	padding: 1px;
-	padding-left: 2.5px;
+	text-align: center;
+	padding-top: 0;
 	cursor: pointer;
+}
+
+.leaflet-routing-remove-waypoint:after {
+	background: none;
 }
 
 .leaflet-routing-geocoders input {
