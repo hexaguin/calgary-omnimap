@@ -17,6 +17,11 @@ calgary_bb = ((-114.9776127585, -113.1511357077),
               (50.4645218901, 51.5463584332))
 
 
+headers = {
+    'User-Agent': 'Omnimap API Server'
+}
+
+
 #  ██████  ███████ ███    ██ ███████ ██████   █████  ██          ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████
 # ██       ██      ████   ██ ██      ██   ██ ██   ██ ██          ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██
 # ██   ███ █████   ██ ██  ██ █████   ██████  ███████ ██          █████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████
@@ -76,7 +81,7 @@ def polyline_in_bb(line, bb=calgary_bb):
 def get_camera_geojson():
     """Generates a Geojson file, complete with popup HTML, of cameras from the 511AB API."""
     # Load AB camera list
-    traffic_cameras = pd.read_json('https://511.alberta.ca/api/v2/get/cameras')
+    traffic_cameras = pd.read_json('https://511.alberta.ca/api/v2/get/cameras')  # TODO make wrappers for Pandas functions to use Requests and custom UA.
     traffic_cameras.columns = [s.lower() for s in traffic_cameras.columns]
     traffic_cameras = traffic_cameras[traffic_cameras.apply(row_in_calgary, axis=1)]  # Calgary only
 
@@ -155,7 +160,7 @@ def get_ab_road_events_geojson():
 
 def get_lime_geojson():
     """Generates a GeoJSON file of all available Lime bikes in Calgary from the Lime API."""
-    bikes = json.loads(requests.get('https://lime.bike/api/partners/v1/gbfs_calgary/free_bike_status.json').text)
+    bikes = json.loads(requests.get('https://lime.bike/api/partners/v1/gbfs_calgary/free_bike_status.json', headers).text)
     bike_list = [
         {
             'type': 'Feature',
@@ -179,7 +184,7 @@ def get_lime_geojson():
 
 def get_ab_roads_geojson():
     """Generates GeoJson polylines for all provincial road conditions in Calgary from 511AB."""
-    ab_road_list = json.loads(requests.get('https://511.alberta.ca/api/v2/get/winterroads').text)
+    ab_road_list = json.loads(requests.get('https://511.alberta.ca/api/v2/get/winterroads', headers).text)
     ab_road_features = [  # Generate a gejson array of lines
         {
             'type': 'Feature',
