@@ -65,7 +65,7 @@ var incidentMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'car-crash', markerColor: 'red', iconColor: 'white'})
 };
 var incidentLayer = L.featureGroup.subGroup(drivingLayer);
-trafficIncidents = L.realtime({
+var trafficIncidents = L.realtime({
 		url: 'https://data.calgary.ca/resource/y5vq-u678.geojson',
 		crossOrigin: true,
 		type: 'json'
@@ -80,7 +80,7 @@ trafficIncidents = L.realtime({
 		}
 	}
 ).addTo(incidentLayer);
-abIncidents = L.realtime({ //TODO prevent redundant call to API?
+var abIncidents = L.realtime({ //TODO prevent redundant call to API?
 		url: '/omnimap/api/abevents'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes
@@ -124,7 +124,7 @@ trafficDetours = L.realtime({
 		}
 	}
 ).addTo(detourLayer);
-abDetours = L.realtime({
+var abDetours = L.realtime({
 		url: '/omnimap/api/abevents'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes
@@ -148,7 +148,7 @@ var cameraMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'camera', markerColor: 'gray', iconColor: 'white'})
 };
 var cameraLayer = L.featureGroup.subGroup(drivingLayer);
-cameras = L.realtime({
+var cameras = L.realtime({
 		url: '/omnimap/api/cameras'
 	}, {
 		interval: 24 * 60 * 60 * 1000, //24 hours
@@ -201,7 +201,7 @@ var highwayNullStyle = {
 	opacity: 0.8
 }
 var roadConditionLayer = L.featureGroup.subGroup(drivingLayer);
-abRoadConditions = L.realtime({
+var abRoadConditions = L.realtime({
 		url:'/omnimap/api/abwinterroads'
 	}, {
 		interval: 15 * 60 * 1000, //15 minutes, matches server cache.
@@ -267,7 +267,7 @@ parkingStripesFree.addTo(omnimap);
 var parkingStripesPaid = new L.StripePattern({angle: 45, color: '#1B3FBD'});
 parkingStripesPaid.addTo(omnimap);
 
-parking = L.realtime({
+var parking = L.realtime({
 		url:'/omnimap/api/parking'
 	}, {
 		interval: 60 * 60 * 1000, //hourly
@@ -340,7 +340,7 @@ var plus15StyleEnclosed = {
 	color: '#0085AD',
 	weight: 2
 };
-plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it streamlines development, and makes things easier if I want to color code closed sections later
+var plus15 = L.realtime({ // Doesn't really need to be realtime right now, but it streamlines development, and makes things easier if I want to color code closed sections later
 		url: 'https://data.calgary.ca/resource/3u3x-hrc7.geojson',
 		crossOrigin: true,
 		type: 'json'
@@ -371,7 +371,7 @@ var offLeashStyle = {
 	weight: 2
 }
 var offLeashLayer = L.featureGroup.subGroup(walkingLayer);
-offLeash = L.realtime({
+var offLeash = L.realtime({
 		url: 'https://data.calgary.ca/resource/enr4-crti.geojson',
 		crossOrigin: true,
 		type: 'json'
@@ -413,7 +413,7 @@ var parkAndBikeMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'bicycle', markerColor: 'blue', iconColor: 'white'})
 };
 var parkAndBikeLayer = L.featureGroup.subGroup(bikeLayer);
-parkAndBike = L.realtime({
+var parkAndBike = L.realtime({
 		url: 'https://data.calgary.ca/resource/nc6z-cxzf.geojson',
 		crossOrigin: true,
 		type: 'json'
@@ -473,7 +473,7 @@ var limeBikeClusters = L.markerClusterGroup({
 	maxClusterRadius: 50
 });
 limeBikeClusters.addTo(limeBikeLayer);
-limeBike = L.realtime({
+var limeBike = L.realtime({
 		url: '/omnimap/api/lime',
 	}, {
 		interval: 10 * 1000, //10 seconds
