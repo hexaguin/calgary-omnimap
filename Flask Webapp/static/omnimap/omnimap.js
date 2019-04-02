@@ -543,16 +543,23 @@ $('#routing-walking-button').click(function(){
 	routingControl.route(); //Update router
 });
 
+// "Jump to GPS" button *HACK* using CSS psudoelements and pixel counting. 
 var routingSideButtonSize    = 32; // Size of buttons next to text boxes
 var routingSideButtonYOffset = 9;
-
-// "Jump to GPS" button HACK using CSS psudoelements and pixel counting. 
 $('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:first-child', function(e){ //Bind to the entire container so that when the DOM shifts around inside the container we don't lose the binding
-	console.log(e.pageY-$(this).offset().top);
-	if (userMarker && e.pageX-$(this).offset().left < routingSideButtonSize && e.pageY-$(this).offset().top-routingSideButtonYOffset < routingSideButtonSize) { //Only activate if the click is on the first 24x24 pixels (where our :before is)
+	//Only activate if the click is on the first 24x24 pixels (where our :before is)
+	if (userMarker && e.pageX-$(this).offset().left < routingSideButtonSize && e.pageY-$(this).offset().top-routingSideButtonYOffset < routingSideButtonSize) { 
 		var waypoints = routingControl.getWaypoints();
 		waypoints[0] = userMarker._latlng;
 		routingControl.setWaypoints(waypoints);
+	}
+});
+
+$('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:nth-last-child(3)', function(e){ //Bind to the entire container so that when the DOM shifts around inside the container we don't lose the binding
+	console.log(e.pageY-$(this).offset().top);
+	if (e.pageX-$(this).offset().left < routingSideButtonSize && e.pageY-$(this).offset().top-routingSideButtonYOffset < routingSideButtonSize) {
+		var waypoints = routingControl.getWaypoints();
+		routingControl.setWaypoints(waypoints.reverse());
 	}
 });
 

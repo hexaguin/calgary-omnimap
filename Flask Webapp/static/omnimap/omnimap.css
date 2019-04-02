@@ -131,12 +131,29 @@ body {
 	content: " ";
 	width: 32px;
 	display: inline-block;
-	height: 12px;
+	height: 21.5px;
 	margin: 2px;
 }
 
 .leaflet-routing-geocoder:first-child:before {  /*GPS autofill button*/
 	content: "\f05b";
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	font-size: 20px;
+	height: 32px;
+	top:0;
+	color: #000000;
+	border-radius: 4px;
+	border: 1px solid #cccccc;
+	padding: 1px;
+	text-align: center;
+	padding-top: 0;
+	cursor: pointer;
+	transform: translate(0px, 3px); /*HACK to fix alignment weirdness*/
+}
+
+.leaflet-routing-geocoder:nth-last-child(3):before {  /*GPS swap button*/
+	content: "\f362";
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 	font-size: 20px;
@@ -162,6 +179,7 @@ body {
 
 button.leaflet-routing-add-waypoint {
 	padding-top: 0px;
+	margin-right: 2px !important;
 }
 
 button.leaflet-routing-add-waypoint::after{
