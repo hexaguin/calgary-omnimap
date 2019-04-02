@@ -489,6 +489,49 @@ var limeBike = L.realtime({
 	}
 ).addTo(limeBikeLayer);
 
+
+/*
+ █████  ███    ███ ███████ ███    ██ ██ ████████ ██ ███████ ███████
+██   ██ ████  ████ ██      ████   ██ ██    ██    ██ ██      ██
+███████ ██ ████ ██ █████   ██ ██  ██ ██    ██    ██ █████   ███████
+██   ██ ██  ██  ██ ██      ██  ██ ██ ██    ██    ██ ██           ██
+██   ██ ██      ██ ███████ ██   ████ ██    ██    ██ ███████ ███████
+*/
+
+
+var amenitiesLayer = L.featureGroup();
+
+
+var libraryMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'book', markerColor: 'blue', iconColor: 'white'})  // We can't use the CPL logo, as we don't have rights to it.
+}
+var libraryLayer = L.featureGroup.subGroup(amenitiesLayer);
+var libraries = L.realtime({
+		url: 'https://data.calgary.ca/resource/j5v6-8bqr.geojson'
+	}, {
+		interval: 24 * 60 * 60 * 1000, // Daily
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, libraryMarkerOptions).bindPopup(
+				'<h2>' + feature.properties.library + '</h2>' +
+				'<table class="hours-table">' +
+				'<tr><td>Monday:</td><td>'    + feature.properties.monday_open     + '</td><td>-</td><td>' + feature.properties.monday_close     + '</td></tr>' +
+				'<tr><td>Tuesday:</td><td>'   + feature.properties.tuesday_open    + '</td><td>-</td><td>' + feature.properties.tuesday_close    + '</td></tr>' +
+				'<tr><td>Wednesday:</td><td>' + feature.properties.wednesday_open  + '</td><td>-</td><td>' + feature.properties.wednesday_close  + '</td></tr>' +
+				'<tr><td>Thursday:</td><td>'  + feature.properties.thursday_open   + '</td><td>-</td><td>' + feature.properties.thursday_close   + '</td></tr>' +
+				'<tr><td>Friday:</td><td>'    + feature.properties.friday_open     + '</td><td>-</td><td>' + feature.properties.friday_close     + '</td></tr>' +
+				'<tr><td>Saturday:</td><td>'  + feature.properties.saturday_open   + '</td><td>-</td><td>' + feature.properties.saturday_close   + '</td></tr>' +
+				'<tr><td>Sunday:</td><td>'    + feature.properties.sunday_open     + '</td><td>-</td><td>' + feature.properties.sunday_close     + '</td></tr>' +
+				'</table><br>' + 
+				feature.properties.location_1_address + '<br>' + feature.properties.postal_code + '<br><br>' +
+				feature.properties.phone_number
+			);
+		},
+		getFeatureId: function(featureData){
+			return featureData.properties.library;
+		}
+}).addTo(libraryLayer);
+
 /*
 ███    ███  █████  ██████      ███████ ███████ ████████ ██    ██ ██████
 ████  ████ ██   ██ ██   ██     ██      ██         ██    ██    ██ ██   ██
@@ -618,6 +661,13 @@ var overlayTree = {
 				{label: '<span id="l-parkandbike"><i class="fas fa-fw fa-bicycle p-blue"></i> Park and Bike</span>', layer: parkAndBikeLayer},
 				{label: '<span id="l-cpabike"><i class="fas fa-fw fa-bicycle p-darkgreen"></i> CPA Bike Parking</span>', layer: cpaBikeLayer},
 				{label: '<span id="l-lime"><i class="fas fa-fw fa-bicycle p-green"></i> Lime Rental Bikes</span>', layer: limeBikeLayer}
+			]
+		},
+		{
+			label: '<b id="l-amenities">Amenities</b>',
+			layer: amenitiesLayer,
+			children: [
+				{label: '<span id="l-libraries"><i class="fas fa-fw fa-book p-blue"></i> Libraries</span>', layer: libraryLayer},
 			]
 		}
 	]
