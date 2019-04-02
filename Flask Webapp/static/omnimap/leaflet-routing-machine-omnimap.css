@@ -106,10 +106,13 @@ color: #888;
 }
 
 .leaflet-routing-geocoders input {
-	width: 303px;
-	width: calc(100% - 4px);
+	width: calc(100% - 38px);
+	height: 32px;
 	line-height: 1.67;
 	border: 1px solid #ccc;
+	padding: 2px;
+	padding-right: 24px;
+	border-radius: 4px;
 }
 
 .leaflet-routing-geocoders button {
@@ -125,8 +128,9 @@ color: #888;
 }
 
 .leaflet-routing-add-waypoint {
+	padding-top: 0px;
 	border-bottom: 1px solid #cccccc !important; /* Repair bottom from easybutton/routing machine conflict */
-	margin: 4px !important; /* Align with my own buttons (and generally space out better) */
+	margin:4px 2px 4px 4px !important; /* Align with my own buttons (and generally space out better) */
 	transition:0.25s; /* fade at same rate as other buttons */
 }
 
@@ -136,7 +140,9 @@ color: #888;
 }
 
 .leaflet-routing-add-waypoint:after {
-	content: '+';
+	content: '\f067';
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
 }
 
 .leaflet-routing-reverse-waypoints:after {
@@ -192,7 +198,7 @@ color: #888;
 .leaflet-routing-remove-waypoint:after {
 	position: absolute;
 	display: block;
-	width: 15px;
+	width: 24px;
 	height: 1px;
 	z-index: 1;
 	right: 1px;
@@ -201,12 +207,13 @@ color: #888;
 	margin: auto;
 	padding: 2px;
 	font-size: 18px;
-	font-weight: bold;
-	content: "\00d7";
+	font-weight: 900;
+	content: "\f00d";
+	font-family: "Font Awesome 5 Free";
 	text-align: center;
 	cursor: pointer;
 	color: #ccc;
-	background: white;
+	background: none;
 	padding-bottom: 16px;
 	margin-top: -16px;
 	padding-right: 4px;

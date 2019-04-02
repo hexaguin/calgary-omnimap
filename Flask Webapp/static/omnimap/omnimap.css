@@ -169,33 +169,6 @@ body {
 	transform: translate(0px, 3px); /*HACK to fix alignment weirdness*/
 }
 
-.leaflet-routing-remove-waypoint:after {
-	background: none;
-	width: 24px;
-	content: "\f00d";
-	font-family: "Font Awesome 5 Free";
-	font-weight: 900;
-}
-
-button.leaflet-routing-add-waypoint {
-	padding-top: 0px;
-	margin-right: 2px !important;
-}
-
-button.leaflet-routing-add-waypoint::after{
-	content: '\f067';
-	font-family: "Font Awesome 5 Free";
-	font-weight: 900;
-}
-
-.leaflet-routing-geocoders input {
-	width: calc(100% - 38px);
-	height: 32px;
-	padding: 2px;
-	padding-right: 24px;
-	border-radius: 4px;
-}
-
 /* clusters */
 
 .marker-cluster {
