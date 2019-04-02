@@ -2,8 +2,8 @@ var mapboxToken = 'sk.eyJ1IjoiaGV4YWd1aW4iLCJhIjoiY2p0YWhoOTliMGIxdTQzc3pzZnJjMn
 
 var omnimap = L.map('map-container', {
 	zoomSnap: 0.25,
-	maxBounds: [[50.4645218901, -114.9776127585],
-	           [51.5463584332, -113.1511357077]],
+	maxBounds: [[50.4645, -115.5],
+	           [51.5464, -112.5]],
 	minZoom: 10
 }).setView([51.0486, -114.0708], 11);
 
