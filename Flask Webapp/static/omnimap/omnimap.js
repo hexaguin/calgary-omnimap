@@ -534,8 +534,12 @@ var libraries = L.realtime({
 
 
 var streetfoodMarkerOptions = {
-	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hotdog', markerColor: 'red', iconColor: 'white'}) // TODO: color icon based on open status
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hotdog', markerColor: 'red', iconColor: 'white'})
 }
+var streetfoodUpcomingMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hotdog', markerColor: 'red', iconColor: 'orange'})
+}
+
 var streetfoodLayer = L.featureGroup.subGroup(amenitiesLayer);
 var streetfood = L.realtime({
 		url: '/omnimap/api/streetfood'
@@ -543,7 +547,7 @@ var streetfood = L.realtime({
 		interval: 5 * 60 * 1000, // 5 minutes
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, streetfoodMarkerOptions).bindPopup(feature.properties.popup).on('popupopen', function(){
+			return L.marker(latlng, (feature.properties.open ? streetfoodMarkerOptions : streetfoodUpcomingMarkerOptions)).bindPopup(feature.properties.popup).on('popupopen', function(){
 				$('.cam-slideshow').not('.slick-initialized').slick({ //Exclude existing slideshows from old popups so we don't scare slick.
 					dots: true,
 					speed: 100
