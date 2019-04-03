@@ -67,6 +67,9 @@ body {
 	text-transform: capitalize;
 }
 
+.leaflet-popup-content a h2 {
+	color: #c8102e;
+}
 
 /* Layer tree */
 

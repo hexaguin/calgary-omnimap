@@ -532,6 +532,28 @@ var libraries = L.realtime({
 		}
 }).addTo(libraryLayer);
 
+
+var streetfoodMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'hotdog', markerColor: 'red', iconColor: 'white'}) // TODO: color icon based on open status
+}
+var streetfoodLayer = L.featureGroup.subGroup(amenitiesLayer);
+var streetfood = L.realtime({
+		url: '/omnimap/api/streetfood'
+	}, {
+		interval: 5 * 60 * 1000, // 5 minutes
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, streetfoodMarkerOptions).bindPopup(feature.properties.popup).on('popupopen', function(){
+				$('.cam-slideshow').not('.slick-initialized').slick({ //Exclude existing slideshows from old popups so we don't scare slick.
+					dots: true,
+					speed: 100
+				});
+				$('.cam-hidden').removeClass('cam-hidden'); //Slideshows start hidden so the stack of img tags don't scroll the page up. Now that we have initialized it, we can display the slideshow.
+			})
+		}
+}).addTo(streetfoodLayer);
+
+
 /*
 ███    ███  █████  ██████      ███████ ███████ ████████ ██    ██ ██████
 ████  ████ ██   ██ ██   ██     ██      ██         ██    ██    ██ ██   ██
@@ -668,6 +690,7 @@ var overlayTree = {
 			layer: amenitiesLayer,
 			children: [
 				{label: '<span id="l-libraries"><i class="fas fa-fw fa-book p-blue"></i> Libraries</span>', layer: libraryLayer},
+				{label: '<span id="l-streetfood"><i class="fas fa-fw fa-hotdog p-red"></i> Street Food</span>', layer: streetfoodLayer}
 			]
 		}
 	]

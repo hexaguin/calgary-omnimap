@@ -50,15 +50,41 @@ def name_from_file_url(file_url):
 
 
 # HTML format string for an image that links to its own source
-camera_link_format = '<a class=\"cam-img\" href=\"{0}\" target=\"_blank\"> <img src=\"{0}\" width=300 height=100%> </a>'
+image_link_format = '<a class=\"cam-img\" href=\"{0}\" target=\"_blank\"> <img src=\"{0}\" width=300 height=100%> </a>'
+image_nolink_format = '<img src=\"{0}\" width=300 height=100%>'
 
 
-def make_camera_image_list(cameras):
-    """Converts a list of cameras to a slideshow for multiple cameras or a single image for one."""
-    if type(cameras) is str:
-        return camera_link_format.format(cameras)
+def make_image_slideshow(images, link=True):
+    """Converts a list of images to a slideshow for multiple images or a single image for one."""
+    if link:
+        if type(images) is str:
+            return image_link_format.format(images)
+        else:
+            return '<div class=\"cam-slideshow cam-hidden\">' + '\n'.join([image_link_format.format(x) for x in images]) + '</div>'
     else:
-        return '<div class=\"cam-slideshow cam-hidden\">' + '\n'.join([camera_link_format.format(x) for x in cameras]) + '</div>'
+        if type(images) is str:
+            return image_nolink_format.format(images)
+        else:
+            return '<div class=\"cam-slideshow cam-hidden\">' + '\n'.join([image_nolink_format.format(x) for x in images]) + '</div>'
+
+
+timestring = '%I:%M %p'
+datestring = '%A, %B %d'
+
+
+def make_foodtruck_html(row):  # TODO use description_short when possible
+    truck_html = '<a href="https://streetfoodapp.com/calgary/{0}" target=\"_blank\"><h2>{1}</h2></a>'.format(row.name, row['name']) + \
+                 '<p>' + row['description'] + '</p>' + \
+                 '<h3>Current Event</h3><p>' + row['start'].strftime(timestring) + ' - ' + row['end'].strftime(timestring) + \
+                 '<br>' + row['start'].strftime(datestring) + \
+                 '<br>' + row['location'] + '</p>'
+    if 'event' in row and pd.isna(row['event']):
+        truck_html += '<p>' + row['event'] + '</p>'
+    if 'images' in row and type(row['images']) == list:
+        truck_html += make_image_slideshow(row['images'])
+    truck_html += '<a href="https://streetfoodapp.com/calgary/{0}" target=\"_blank\">Read more on Street Food App</a>'.format(row.name)
+
+    return truck_html
 
 
 def polyline_in_bb(line, bb=calgary_bb):
@@ -105,7 +131,7 @@ def get_camera_geojson():
     camera_features = []
     for index, row in traffic_cameras.iterrows():
         row['popup'] = '<h2>' + row['name'] + '</h2>' + \
-                make_camera_image_list(row['url']) + '<br>' + \
+                make_image_slideshow(row['url']) + '<br>' + \
                 str(row['description'])
         feature = {
             'type': 'Feature',
@@ -221,3 +247,63 @@ def get_parking_geojson():
         i['properties']['id'] = i['id']
 
     return geojson.dumps(rewind(parking))
+
+
+def get_street_food_geojson():
+    """Generates a GeoJSON file of all active or upcoming trucks on streetfoodapp.com"""
+    schedule_json = json.loads(requests.get('http://data.streetfoodapp.com/1.1/schedule/calgary/', headers).text)
+
+    rows = []  # List of dicts to become rows in our DF
+    for truck in schedule_json['vendors']:
+        truck_data = schedule_json['vendors'][truck]
+        if len(truck_data['open']) > 0:  # Don't even bother if the truck isn't scheduled
+            row_data = {
+                'id':           truck_data['identifier'],
+                'name':         truck_data['name'],
+                'description':  truck_data['description'],
+                'start':        truck_data['open'][0]['start'],
+                'end':          truck_data['open'][0]['end'],
+                'location':     truck_data['open'][0]['display'],
+                'lat':          truck_data['open'][0]['latitude'],
+                'lon':          truck_data['open'][0]['longitude']
+            }
+            if 'images' in truck_data.keys():
+                row_data['images'] = truck_data['images']['header']
+            if 'special' in truck_data.keys():
+                row_data['event'] = truck_data['open'][0]['special']
+            rows.append(row_data)
+
+    trucks = pd.DataFrame(rows)
+    trucks.set_index('id', inplace=True)
+    trucks['url'] = 'https://streetfoodapp.com/calgary/' + trucks.index
+    trucks['startEpoch'] = trucks['start']
+    trucks['endEpoch'] = trucks['end']
+    trucks['start'] = pd.to_datetime(trucks['start'], unit='s').dt.tz_localize('UTC').dt.tz_convert('America/Edmonton')
+    trucks['end'] = pd.to_datetime(trucks['end'], unit='s').dt.tz_localize('UTC').dt.tz_convert('America/Edmonton')
+
+    trucks = trucks[trucks['start'] < pd.Timestamp.now('America/Edmonton')+pd.DateOffset(hours=12)]  # Trucks opening in the next 12 hours
+    trucks = trucks[trucks['end'] > pd.Timestamp.now('America/Edmonton')]  # Trucks not yet closed
+    trucks['open'] = trucks['start'] < pd.Timestamp.now('America/Edmonton')
+    trucks['popup'] = trucks.apply(make_foodtruck_html, axis=1)
+
+    # Start building geojson
+    truck_geojson_list = []
+    for index, row in trucks.reset_index().drop(columns=['start', 'end']).fillna('').iterrows():
+        truck_geojson_list.append({
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [float(row['lon']), float(row['lat'])]
+            },
+            'properties': row.to_dict()
+        })
+
+    truck_geojson_dict = {
+        'type': 'FeatureCollection',
+        'features': truck_geojson_list,
+        'meta': {
+            'generated': int(time.time())
+        }
+    }
+
+    return json.dumps(truck_geojson_dict, allow_nan=False)
