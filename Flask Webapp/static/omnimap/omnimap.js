@@ -558,6 +558,67 @@ var streetfood = L.realtime({
 }).addTo(streetfoodLayer);
 
 
+
+var playgroundMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'child', markerColor: 'purple', iconColor: 'white'})
+}
+var playgroundClusterOptions = {
+	iconCreateFunction: function(cluster) {
+		var count = cluster.getChildCount();
+		if (count > 50) { // Large
+			return L.divIcon({ html: '<div><i class="fas fa-child"></i><br><span>' + cluster.getChildCount() +
+			                         '</span></div>', className: 'marker-cluster playground-cluster-large', iconSize: new L.Point(40, 40) });
+		} else if (count > 10) { // Medium
+			return L.divIcon({ html: '<div><i class="fas fa-child"></i><br><span>' + cluster.getChildCount() +
+			                         '</span></div>', className: 'marker-cluster playground-cluster-med', iconSize: new L.Point(40, 40) });
+		} else { // Small
+			return L.divIcon({ html: '<div><i class="fas fa-child"></i><br><span>' + cluster.getChildCount() +
+			                         '</span></div>', className: 'marker-cluster playground-cluster-small', iconSize: new L.Point(40, 40) });
+		}
+	},
+	maxClusterRadius: 80,
+	disableClusteringAtZoom: 15
+}
+
+var playgroundStyle = {
+	color: '#8B32A3',
+	weight: 2
+}
+
+var playgroundLayer = L.featureGroup.subGroup(amenitiesLayer);
+var playgroundDeflated =  L.deflate({minSize: 20, markerCluster: true, markerOptions: playgroundMarkerOptions, markerClusterOptions: playgroundClusterOptions});
+playgroundDeflated.addTo(playgroundLayer);
+
+var playgrounds = L.realtime({
+		url:'/omnimap/api/playgrounds'
+	}, {
+		interval: 12 * 60 * 60 * 1000, //12 hours
+		removeMissing: true,
+		container: playgroundDeflated,
+		style: function() { // For some reason this needs to be a function
+			return playgroundStyle;
+		},
+		onEachFeature: function(feature, layer){
+			var popup = '<h2>Playground</h2>'
+			if (feature.properties.name !== undefined) {
+				popup += '<h3>' + feature.properties.name + '</h3>'
+			}
+			['description', 'surface', 'wheelchair', 'operator'].forEach(function(key) { // Itterate over all relevant properties
+				if (feature.properties[key] !== undefined) {
+					popup += key + ': ' + feature.properties[key] + '<br>'
+				}
+			})
+			if (feature.properties.website !== undefined) {
+				popup += '<a href="' + feature.properties.website + '" target="_blank"> website </a>'
+			}
+			layer.bindPopup(popup)
+		},
+		pointToLayer: function(feature, latlng){
+			feature // This is purely to get Theia to stop yelling at me. TODO find a way to disable the variable unused warning.
+			return L.marker(latlng, playgroundMarkerOptions);
+		}
+}).addTo(playgroundLayer);
+
 /*
 ███    ███  █████  ██████      ███████ ███████ ████████ ██    ██ ██████
 ████  ████ ██   ██ ██   ██     ██      ██         ██    ██    ██ ██   ██
@@ -694,7 +755,8 @@ var overlayTree = {
 			layer: amenitiesLayer,
 			children: [
 				{label: '<span id="l-libraries"><i class="fas fa-fw fa-book p-blue"></i> Libraries</span>', layer: libraryLayer},
-				{label: '<span id="l-streetfood"><i class="fas fa-fw fa-hotdog p-red"></i> Street Food</span>', layer: streetfoodLayer}
+				{label: '<span id="l-streetfood"><i class="fas fa-fw fa-hotdog p-red"></i> Street Food</span>', layer: streetfoodLayer},
+				{label: '<span id="l-playgrounds"><i class="fas fa-fw fa-child p-green"></i> Playgrounds</span>', layer: playgroundLayer},
 			]
 		}
 	]

@@ -220,6 +220,24 @@ body {
 	border-color: #688c9c80;
 }
 
+.playground-cluster-small {
+	background-color: #cb4fb3;
+	color: #FFFFFF;
+	border-color: #688c9c80;
+}
+
+.playground-cluster-med {
+	background-color: #963984;
+	color: #FFFFFF;
+	border-color: #688c9c80;
+}
+
+.playground-cluster-large {
+	background-color: #631C56;
+	color: #FFFFFF;
+	border-color: #688c9c80;
+}
+
 /* colors */
 
 .p-orange { /*popup colors from AwesomeMarkers*/
@@ -240,6 +258,10 @@ body {
 
 .p-darkgreen {
 	color: #728224;
+}
+
+.p-purple {
+	color: #cb4fb3;
 }
 
 .c-red { /*CoC colors*/

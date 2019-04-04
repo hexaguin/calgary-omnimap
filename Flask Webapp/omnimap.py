@@ -97,6 +97,17 @@ def polyline_in_bb(line, bb=calgary_bb):
     return in_bb
 
 
+def overpass_to_geojson(query):
+    """Generates a GeoJSON file for any Overpass query"""
+    osm_data = overpass.API().get(query, verbosity='geom')
+    for i in osm_data['features']:
+        if i['geometry']['type'] == 'LineString' and len(i['geometry']['coordinates']) >= 4:  # WORKAROUND to fix overpass lib's faulty polygon way handling
+            i['geometry']['type'] = 'Polygon'
+            i['geometry']['coordinates'] = [i['geometry']['coordinates']]
+        i['properties']['id'] = i['id']
+    return geojson.dumps(rewind(osm_data))
+
+
 #  █████  ██████  ██     ███████ ███    ██ ██████  ██████   ██████  ██ ███    ██ ████████ ███████
 # ██   ██ ██   ██ ██     ██      ████   ██ ██   ██ ██   ██ ██    ██ ██ ████   ██    ██    ██
 # ███████ ██████  ██     █████   ██ ██  ██ ██   ██ ██████  ██    ██ ██ ██ ██  ██    ██    ███████
@@ -239,14 +250,18 @@ def get_ab_roads_geojson():
 
 def get_parking_geojson():
     """Generates a GeoJSON file of all OpenStreetMap features matching 'amenity=parking' in Calgary."""
-    parking = overpass.API().get('way["amenity"="parking"](50.859710441584,-114.27978515625,51.218927150951,-113.86505126953);', verbosity='geom')
-    for i in parking['features']:
-        if i['geometry']['type'] == 'LineString' and len(i['geometry']['coordinates']) >= 4:  # WORKAROUND to fix overpass lib's faulty polygon way handling
-            i['geometry']['type'] = 'Polygon'
-            i['geometry']['coordinates'] = [i['geometry']['coordinates']]
-        i['properties']['id'] = i['id']
+    return overpass_to_geojson('way["amenity"="parking"](50.859710441584,-114.27978515625,51.218927150951,-113.86505126953);')
 
-    return geojson.dumps(rewind(parking))
+
+def get_playground_geojson():
+    """Generates a geojson file of all OSM features that are leisure=playground without being indoor or paid"""
+    return overpass_to_geojson("""
+        (
+            node["leisure"="playground"]["fee"!="yes"]["indoor"!="yes"](50.859710441584,-114.27978515625,51.218927150951,-113.86505126953);
+            way["leisure"="playground"]["fee"!="yes"]["indoor"!="yes"](50.859710441584,-114.27978515625,51.218927150951,-113.86505126953);
+            relation["leisure"="playground"]["fee"!="yes"]["indoor"!="yes"](50.859710441584,-114.27978515625,51.218927150951,-113.86505126953);
+        );
+    """)
 
 
 def get_street_food_geojson():

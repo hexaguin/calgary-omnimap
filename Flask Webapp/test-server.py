@@ -53,6 +53,12 @@ def streetfood():
     return omnimap.get_street_food_geojson()
 
 
+@app.route('/omnimap/api/playgrounds')
+@cache.cached(timeout=60)  # Minutely cache
+def playgrounds():
+    return omnimap.get_playground_geojson()
+
+
 # Begin server
 if __name__ == '__main__':
     app.run('0.0.0.0', 8083, use_reloader=True, use_debugger=True)
