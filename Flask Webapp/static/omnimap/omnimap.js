@@ -619,6 +619,91 @@ var playgrounds = L.realtime({
 		}
 }).addTo(playgroundLayer);
 
+//Calgary events dataset
+
+function offsetToday(offset){ //Returns a Date of today + offset.
+	var today = new Date();
+	var nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+offset);
+	return nextweek;
+}
+
+function soqlDateRange(url, start, end){ // Appends a between soql filter to a Socrata URL
+	return url +  encodeURIComponent(" AND next_date between '") + start.toISOString().split('T')[0] + encodeURIComponent("' and '") + end.toISOString().split('T')[0] + '%27'
+}
+
+function calgaryEventToHTML(properties){
+	var popup = 
+		'<h2>' + properties.title + '</h2>' +
+		'<p>' + properties.all_dates + '</p>'
+	if (properties.host_organization != null) {
+		popup += '<h3> Hosted by ' + properties.host_organization + '</h3>';
+	}
+	popup += '<p>' + properties.notes + '</p>'
+	if (properties.address != null) {
+		popup += '<p>' + properties.address + '</p>';
+	}
+	if (properties.more_info_url != null) {
+		popup += '<a href="' + properties.more_info_url + '" target="_blank"><p>Website</p></a>';
+	}
+	return popup
+}
+
+
+var festivalLayer =  L.featureGroup.subGroup(amenitiesLayer);
+var festivalMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'star', markerColor: 'white', iconColor: 'purple'})
+};
+var currentFestivalMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'star', markerColor: 'purple', iconColor: 'white'})
+};
+
+var festivals = L.realtime({
+		url: soqlDateRange('https://data.calgary.ca/resource/rbmk-85cw.geojson?$query=' + encodeURIComponent("SELECT * WHERE event_type = 'Festivals / major events'"), offsetToday(0), offsetToday(7))
+	}, {
+		interval: 3 * 60 * 60 * 1000, //3 hours
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			popup = calgaryEventToHTML(feature.properties);
+			eventDate = new Date(feature.properties.next_date);
+			var markerOptions = (eventDate < offsetToday(2)) ? currentFestivalMarkerOptions : festivalMarkerOptions;
+			return L.marker(latlng, markerOptions).bindPopup(popup);
+		},
+		getFeatureId: function(feature){
+			return feature.properties.title;
+		}
+}).addTo(festivalLayer);
+
+
+var communityEventLayer =  L.featureGroup.subGroup(amenitiesLayer);
+var communityEventMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'star', markerColor: 'white', iconColor: 'green'})
+};
+var currentCommunityEventMarkerOptions = {
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'star', markerColor: 'green', iconColor: 'white'})
+};
+
+var communityEvents = L.realtime({
+		url: soqlDateRange('https://data.calgary.ca/resource/rbmk-85cw.geojson?$query=' + encodeURIComponent("SELECT * WHERE event_type = 'Community event'"), offsetToday(0), offsetToday(7))
+	}, {
+		interval: 3 * 60 * 60 * 1000, //3 hours
+		removeMissing: true,
+		pointToLayer: function(feature, latlng) {
+			popup = calgaryEventToHTML(feature.properties);
+			eventDate = new Date(feature.properties.next_date);
+			var markerOptions = (eventDate < offsetToday(2)) ? currentCommunityEventMarkerOptions : communityEventMarkerOptions;
+			return L.marker(latlng, markerOptions).bindPopup(popup);
+		},
+		getFeatureId: function(feature){
+			return feature.properties.title;
+		}
+}).addTo(communityEventLayer);
+
+
+// Auto-update date-based Socrata URLs here
+setInterval(function(){
+	festivals.setUrl(soqlDateRange('https://data.calgary.ca/resource/rbmk-85cw.geojson?$query=' + encodeURIComponent("SELECT * WHERE event_type = 'Festivals / major events'"), offsetToday(0), offsetToday(7)))
+}, 6 * 60 * 60 * 1000); // Update every 6 hours
+
 /*
 ███    ███  █████  ██████      ███████ ███████ ████████ ██    ██ ██████
 ████  ████ ██   ██ ██   ██     ██      ██         ██    ██    ██ ██   ██
@@ -706,6 +791,9 @@ plus15Layer.addTo(omnimap);
 parkAndBikeLayer.addTo(omnimap);
 cpaBikeLayer.addTo(omnimap);
 
+festivalLayer.addTo(omnimap);
+communityEventLayer.addTo(omnimap);
+
 var baseTree = {
 	label: 'Base Maps',
 	children: [
@@ -756,7 +844,9 @@ var overlayTree = {
 			children: [
 				{label: '<span id="l-libraries"><i class="fas fa-fw fa-book p-blue"></i> Libraries</span>', layer: libraryLayer},
 				{label: '<span id="l-streetfood"><i class="fas fa-fw fa-hotdog p-red"></i> Street Food</span>', layer: streetfoodLayer},
-				{label: '<span id="l-playgrounds"><i class="fas fa-fw fa-child p-green"></i> Playgrounds</span>', layer: playgroundLayer},
+				{label: '<span id="l-playgrounds"><i class="fas fa-fw fa-child p-purple"></i> Playgrounds</span>', layer: playgroundLayer},
+				{label: '<span id="l-festivals"><i class="fas fa-fw fa-star p-purple"></i> Festivals</span>', layer: festivalLayer},
+				{label: '<span id="l-communityevents"><i class="fas fa-fw fa-star p-green"></i> Community Events</span>', layer: communityEventLayer},
 			]
 		}
 	]
