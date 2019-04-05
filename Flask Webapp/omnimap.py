@@ -298,6 +298,17 @@ def get_street_food_geojson():
 
     trucks = trucks[trucks['start'] < pd.Timestamp.now('America/Edmonton')+pd.DateOffset(hours=12)]  # Trucks opening in the next 12 hours
     trucks = trucks[trucks['end'] > pd.Timestamp.now('America/Edmonton')]  # Trucks not yet closed
+
+    if trucks.shape[0] == 0:  # If there's no food trucks right now, just give up.
+        return json.dumps({
+            'type': 'FeatureCollection',
+            'features': [],
+            'meta': {
+                'generated': int(time.time()),
+                'message': 'No food trucks at this time'
+            }
+        })
+
     trucks['open'] = trucks['start'] < pd.Timestamp.now('America/Edmonton')
     trucks['popup'] = trucks.apply(make_foodtruck_html, axis=1)
 
