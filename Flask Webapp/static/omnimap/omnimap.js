@@ -716,10 +716,32 @@ L.control.scale().addTo(omnimap); //Scale
 
 // Routing
 
+var NavFromMarkerOptions = {
+	draggable: true,
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'play', markerColor: 'green', iconColor: 'white'})
+};
+var NavViaMarkerOptions = {
+	draggable: true,
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'step-forward', markerColor: 'blue', iconColor: 'white'})
+};
+var NavToMarkerOptions = {
+	draggable: true,
+	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'stop', markerColor: 'red', iconColor: 'white'})
+};
+
 routingControl = L.Routing.control({
 	router: L.Routing.mapbox(mapboxToken, {
 		profile: 'mapbox/driving-traffic'
 	}),
+	createMarker: function(i, waypoint, n) {
+		if (i == 0) {
+			return L.marker(waypoint.latLng, NavFromMarkerOptions);
+		} else if (i == n-1) {
+			return L.marker(waypoint.latLng, NavToMarkerOptions);
+		} else {
+			return L.marker(waypoint.latLng, NavViaMarkerOptions);
+		}
+	},
 	geocoder: L.Control.Geocoder.mapbox(mapboxToken, {
 		autocomplete: true,
 		geocodingQueryParams: {bbox: '-114.45260148479741,50.66596875349393,-113.6475824946525,51.317842186832365'}
@@ -771,7 +793,6 @@ $('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:first-chi
 });
 
 $('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:nth-last-child(3)', function(e){ //Bind to the entire container so that when the DOM shifts around inside the container we don't lose the binding
-	console.log(e.pageY-$(this).offset().top);
 	if (e.pageX-$(this).offset().left < routingSideButtonSize && e.pageY-$(this).offset().top-routingSideButtonYOffset < routingSideButtonSize) {
 		var waypoints = routingControl.getWaypoints();
 		routingControl.setWaypoints(waypoints.reverse());
