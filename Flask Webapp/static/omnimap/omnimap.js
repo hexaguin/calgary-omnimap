@@ -751,6 +751,16 @@ routingControl = L.Routing.control({
 routingControl.hide();
 $('leaflet-routing-container').attr('title','Navigation'); // Add title text to the button
 
+routingControl.on('routingstart', function(e){ // Automatically switch between driving-traffic and driving based on number of waypoints
+	if (e.waypoints.length > 3 && routingControl.getRouter().options.profile == "mapbox/driving-traffic") { // If we're using traffic and have 4+ points...
+		routingControl.getRouter().options.profile = "mapbox/driving"; // Switch to non-traffic mode
+		routingControl.route(); //Update router
+	} else if (e.waypoints.length <= 3 && routingControl.getRouter().options.profile == "mapbox/driving") { /// If we have few points and aren't using traffic...
+		routingControl.getRouter().options.profile = "mapbox/driving-traffic"; // Switch to non-traffic mode
+		routingControl.route(); //Update router
+	}
+},)
+
 // Inject controls for switching profiles.
 $('.leaflet-routing-geocoders').append(`
 	<div id="routing-modes">
@@ -779,6 +789,8 @@ $('#routing-walking-button').click(function(){
 	routingControl.getRouter().options.profile = "mapbox/walking"; //Switch profiles
 	routingControl.route(); //Update router
 });
+
+
 
 // "Jump to GPS" button *HACK* using CSS psudoelements and pixel counting. 
 var routingSideButtonSize    = 32; // Size of buttons next to text boxes
