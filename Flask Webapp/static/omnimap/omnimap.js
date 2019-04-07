@@ -995,3 +995,29 @@ omnimap.on('dragstart', function () { // Stop following GPS when the user pans
 	followingGps = false;
 	gpsToggle.state('enable-gps');
 });
+
+
+// Context Menu
+var contextMenu = L.popup().setContent(
+	`<h2><i class="fas fa-directions"></i> Navigate:</h2>
+	<span id="context-nav-from" class="context-button">From here</span>
+	<span id="context-nav-to" class="context-button">To here</span>`
+);
+
+omnimap.on('contextmenu', function(e){
+	contextMenu.setLatLng(e.latlng).openOn(omnimap); // Open at cursor
+	
+	// Set up button listeners for our newly created buttons
+	$('#context-nav-from').click(function(){
+		var waypoints = routingControl.getWaypoints();
+		waypoints[0] = contextMenu.getLatLng(); // Set first point
+		routingControl.setWaypoints(waypoints);
+		omnimap.closePopup();
+	});
+	$('#context-nav-to').click(function(){
+		var waypoints = routingControl.getWaypoints();
+		waypoints[waypoints.length-1] = contextMenu.getLatLng(); // Set last point
+		routingControl.setWaypoints(waypoints);
+		omnimap.closePopup();
+	});
+});
