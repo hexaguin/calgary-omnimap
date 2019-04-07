@@ -1033,8 +1033,8 @@ omnimap.on('dragstart', function () { // Stop following GPS when the user pans
 // Context Menu
 var contextMenu = L.popup().setContent(
 	`<h2><i class="fas fa-directions"></i> Navigate:</h2>
-	<span id="context-nav-from" class="context-button">From here</span>
-	<span id="context-nav-to" class="context-button">To here</span>`
+	<span id="context-nav-from" class="context-button"><i class="fas fa-play"></i> From here</span>
+	<span id="context-nav-to" class="context-button"><i class="fas fa-stop"></i> To here</span>`
 );
 
 omnimap.on('contextmenu', function(e){
