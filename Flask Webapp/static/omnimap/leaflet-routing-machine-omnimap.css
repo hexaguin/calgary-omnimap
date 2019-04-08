@@ -41,6 +41,11 @@
 	display: none;
 }
 
+.leaflet-routing-alternatives-container {
+	max-height: 60vh;
+	overflow: auto;
+}
+
 .leaflet-bar .leaflet-routing-alt:last-child {
 	border-bottom: none;
 }
@@ -54,6 +59,7 @@ color: #888;
 
 .leaflet-routing-alt table {
 	border-collapse: collapse;
+	width: 100%;
 }
 
 .leaflet-routing-alt tr:hover {
@@ -295,5 +301,9 @@ color: #888;
 		margin: 0 !important;
 		width: 100vw;
 		height: 100%;
+	}
+	.leaflet-routing-alternatives-container {
+		max-height: 35vh;
+		overflow: auto;
 	}
 }
