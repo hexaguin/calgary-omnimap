@@ -146,14 +146,9 @@ color: #888;
 }
 
 .leaflet-routing-add-waypoint:after {
-	content: '\f067';
+	content: '\f067'; /* fa-plus */
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
-}
-
-.leaflet-routing-reverse-waypoints:after {
-	font-weight: normal;
-	content: '\21c5';
 }
 
 .leaflet-routing-geocoders button:hover {
@@ -214,7 +209,7 @@ color: #888;
 	padding: 2px;
 	font-size: 18px;
 	font-weight: 900;
-	content: "\f00d";
+	content: "\f00d"; /* fa-times (it's an X) */
 	font-family: "Font Awesome 5 Free";
 	text-align: center;
 	cursor: pointer;
@@ -244,7 +239,7 @@ color: #888;
 }
 
 .leaflet-routing-collapse-btn:after {
-	content: "\F00D";
+	content: "\F00D"; /* fa-times */
 	font-family: "Font Awesome 5 Free";
 	font-size: 0.75em;
 	display: block;
@@ -272,7 +267,8 @@ color: #888;
 }
 
 .leaflet-routing-container-hide .leaflet-routing-collapse-btn:before {
-	content: "\F002";
+	content: "\f5eb"; /*fa-directions*/
+	margin-left: 0.5px;
 	font-family: "Font Awesome 5 Free";
 	position:absolute;
 	top:0;
