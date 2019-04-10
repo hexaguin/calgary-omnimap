@@ -71,6 +71,10 @@ body {
 	color: #c8102e;
 }
 
+.leaflet-popup-content a h2:hover {
+	text-decoration: underline;
+}
+
 /*Context Menu*/
 
 .context-button {
