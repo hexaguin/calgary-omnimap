@@ -80,7 +80,7 @@ var trafficIncidents = L.realtime({
 		interval: 60 * 1000, // 1 minute
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, incidentMarkerOptions).bindPopup('<h2>Traffic Incident</h2>' + feature.properties.incident_info + '<br>' + feature.properties.description);
+			return L.marker(latlng, incidentMarkerOptions).bindPopup('<h2>Traffic Incident</h2>' + feature.properties.incident_info + '<br>' + feature.properties.description + '<br><br>Source: City of Calgary');
 		},
 		getFeatureId: function(featureData){
 			return featureData.properties.latitude + featureData.properties.longitude;
@@ -121,9 +121,9 @@ trafficDetours = L.realtime({
 		removeMissing: true,
 		pointToLayer: function(feature, latlng) {
 			if ( feature.properties.description.includes('The road is closed')) {
-				return L.marker(latlng, closureMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
+				return L.marker(latlng, closureMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description + '<br><br>Source: City of Calgary');
 			} else {
-				return L.marker(latlng, detourMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description);
+				return L.marker(latlng, detourMarkerOptions).bindPopup('<h2>Traffic Detour</h2>' + feature.properties.description + '<br><br>Source: City of Calgary');
 			}
 		},
 		getFeatureId: function(featureData){
@@ -976,8 +976,7 @@ omnimap.on('overlayremove', function(layer) {
 	}
 });
 
-// Disable spinner on load
-
+// Disable spinner on load. A slight HACK, but seems to work fine.
 limeBike.on('update', function() {
 	hideSpinner();
 });
@@ -987,6 +986,7 @@ abRoadConditions.on('update', function() {
 parking.on('update', function() {
 	hideSpinner();
 });
+
 //User GPS
 var userMarker;
 var userCircle;

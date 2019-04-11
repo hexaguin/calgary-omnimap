@@ -173,7 +173,10 @@ def get_ab_road_events_geojson():
     events_df.fillna('', inplace=True)  # Remove NaN values to meet JSON standards
     events_features = []
     for index, row in events_df.iterrows():
-        row['popup'] = '<h2 class=\"titlecase\">' + row['eventtype'] + '</h2>' + row['description']
+        event_type = row['eventtype']  # Separate variable for displayed event type in popup
+        if row['eventtype'] == 'accidentsAndIncidents':
+            event_type = 'Incident'
+        row['popup'] = '<h2 class=\"titlecase\">' + event_type + '</h2>' + row['description'] + '<br><br>Source: Alberta Transportation'
         feature = {
             'type': 'Feature',
             'geometry': {
