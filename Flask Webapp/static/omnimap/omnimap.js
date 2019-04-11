@@ -41,6 +41,13 @@ var basemapCartoDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{
 
 basemapMapboxStreets.addTo(omnimap); // Set mapbox as the default basemap
 
+function hideSpinner() { // Entirely unneeded wrapper functions to show/hide the loading indicator
+	$('#loading-spinner').addClass('hidden');
+}
+function showSpinner() {
+	$('#loading-spinner').removeClass('hidden');
+}
+
 /*
 ██       █████  ██    ██ ███████ ██████  ███████
 ██      ██   ██  ██  ██  ██      ██   ██ ██
@@ -937,12 +944,15 @@ omnimap.on('overlayadd', function(layer) {
 	switch (layer.layer) {
 		case limeBikeLayer:
 			limeBike.start();
+			showSpinner();
 			break;
 		case roadConditionLayer:
 			abRoadConditions.start();
+			showSpinner();
 			break;
 		case parkingLayer:
 			parking.start();
+			showSpinner();
 			break;
 		default:
 			break;
@@ -966,6 +976,17 @@ omnimap.on('overlayremove', function(layer) {
 	}
 });
 
+// Disable spinner on load
+
+limeBike.on('update', function() {
+	hideSpinner();
+});
+abRoadConditions.on('update', function() {
+	hideSpinner();
+});
+parking.on('update', function() {
+	hideSpinner();
+});
 //User GPS
 var userMarker;
 var userCircle;
@@ -1054,3 +1075,7 @@ omnimap.on('contextmenu', function(e){
 		omnimap.closePopup();
 	});
 });
+
+$(document).ready(function(){
+	hideSpinner();
+})

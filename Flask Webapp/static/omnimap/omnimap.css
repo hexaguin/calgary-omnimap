@@ -1,5 +1,19 @@
 /* page */
 
+.hidden {
+	visibility: hidden;
+}
+
+#loading-spinner {
+	position: absolute;
+	font-size: 48px;
+	z-index: 100000;
+	left: calc(50vw - 0.5em);
+	top:  calc(50vh - 0.5em);
+	color: #c8102e;
+	pointer-events: none;
+}
+
 body {
 	margin: 0;
 }
