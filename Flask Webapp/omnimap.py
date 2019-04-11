@@ -170,13 +170,21 @@ def get_ab_road_events_geojson():
     events_df = pd.read_json('https://511.alberta.ca/api/v2/get/event')
     events_df.columns = [s.lower() for s in events_df.columns]
     events_df = events_df[events_df.apply(row_in_calgary, axis=1)]  # Only items in Calgary
+    # Localise timestamps and make them into human-friendly strings
+    events_df['start'] = pd.to_datetime(events_df['startdate'], unit='s').dt.tz_localize('UTC').dt.tz_convert('America/Edmonton').dt.strftime('%B %d %Y, %-I:%M %p')
+    events_df['end'] = pd.to_datetime(events_df['plannedenddate'], unit='s').dt.tz_localize('UTC').dt.tz_convert('America/Edmonton').dt.strftime('%B %d %Y, %-I:%M %p')
     events_df.fillna('', inplace=True)  # Remove NaN values to meet JSON standards
     events_features = []
     for index, row in events_df.iterrows():
         event_type = row['eventtype']  # Separate variable for displayed event type in popup
         if row['eventtype'] == 'accidentsAndIncidents':
             event_type = 'Incident'
-        row['popup'] = '<h2 class=\"titlecase\">' + event_type + '</h2>' + row['description'] + '<br><br>Source: Alberta Transportation'
+        row['popup'] = '<h2 class=\"titlecase\">' + event_type + '</h2>' + row['description']
+        if row['start'] != 'NaT':
+            row['popup'] += '<br><br>Start Date: ' + row['start']
+        if row['end'] != 'NaT':
+            row['popup'] += '<br>Planned End Date: ' + row['end']
+        row['popup'] += '<br><br>Source: Alberta Transportation'
         feature = {
             'type': 'Feature',
             'geometry': {
