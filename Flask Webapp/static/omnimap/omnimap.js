@@ -68,6 +68,8 @@ function showSpinner() {
 
 var drivingLayer = L.featureGroup(); // Master layer for road features
 
+var emptyRoadLayer = L.featureGroup.subGroup(drivingLayer); // Null layer that looks like a normal driving layer
+
 var trafficLayer = L.featureGroup.subGroup(drivingLayer);
 var mapboxTrafficUrl = "https://{s}.tiles.mapbox.com/v4/mapbox.mapbox-traffic-v1/{z}/{x}/{y}.vector.pbf?access_token={token}";
 var mapboxTrafficOptions = {
@@ -124,7 +126,7 @@ var mapboxTrafficOptions = {
 var mapboxTrafficLayer = L.vectorGrid.protobuf(mapboxTrafficUrl, mapboxTrafficOptions).addTo(trafficLayer);
 
 setInterval(function () { // Reloads traffic data periodically
-	if (omnimap.hasLayer(trafficLayer)) { // If the traffic layer is enabled
+	if (omnimap.hasLayer(trafficLayer) && document.visibilityState == 'visible') { // If the traffic layer is enabled and this page is visible
 		mapboxTrafficLayer.redraw(); // Redraw, forcing a reload of traffic data and thus staying updated
 	}
 }, 60 * 1000); // Update every minute
@@ -885,6 +887,7 @@ $('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:nth-last-
 drivingLayer.addTo(omnimap);
 incidentLayer.addTo(omnimap);
 detourLayer.addTo(omnimap);
+trafficLayer.addTo(omnimap);
 
 walkingLayer.addTo(omnimap);
 plus15Layer.addTo(omnimap);
@@ -915,11 +918,12 @@ var overlayTree = {
 			label: '<b id="l-driving">Driving</b>',
 			layer: drivingLayer,
 			children: [
+				{label: '<span id="l-traffic"><i class="fas fa-fw fa-square p-green"></i> Traffic</span>', layer: trafficLayer, radioGroup: 'roadcolor'},
+				{label: '<span id="l-conditions"><i class="fas fa-fw fa-square c-blue"></i> Road Conditions</span>', layer: roadConditionLayer, radioGroup: 'roadcolor'},
+				{label: '<span id="l-emptyroads"><i class="fas fa-fw fa-times"></i> No Color Coding</span>', layer: emptyRoadLayer, radioGroup: 'roadcolor'},
 				{label: '<span id="l-incidents"><i class="fas fa-fw fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
 				{label: '<span id="l-detour"><i class="fas fa-fw fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
 				{label: '<span id="l-camera"><i class="fas fa-fw fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
-				{label: '<span id="l-conditions"><i class="fas fa-fw fa-square c-green"></i> Road Conditions</span>', layer: roadConditionLayer},
-				{label: '<span id="l-traffic"><i class="fas fa-fw fa-square p-green"></i> Traffic</span>', layer: trafficLayer},
 				{label: '<span id="l-parking"><i class="fas fa-fw fa-parking p-blue"></i> Parking</span>', layer: parkingLayer},
 			]
 		},
