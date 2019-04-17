@@ -68,6 +68,9 @@ function showSpinner() {
 
 var drivingLayer = L.featureGroup(); // Master layer for road features
 
+var trafficLayer = L.featureGroup.subGroup(drivingLayer);
+var mqTraffic = MQ.trafficLayer().addTo(trafficLayer);
+
 var incidentMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'car-crash', markerColor: 'red', iconColor: 'white'})
 };
@@ -854,6 +857,7 @@ var overlayTree = {
 			label: '<b id="l-driving">Driving</b>',
 			layer: drivingLayer,
 			children: [
+				{label: '<span id="l-traffic"><i class="fas fa-fw fa-car p-green"></i> [WIP] Traffic</span>', layer: trafficLayer},
 				{label: '<span id="l-incidents"><i class="fas fa-fw fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
 				{label: '<span id="l-detour"><i class="fas fa-fw fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
 				{label: '<span id="l-camera"><i class="fas fa-fw fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
