@@ -69,7 +69,65 @@ function showSpinner() {
 var drivingLayer = L.featureGroup(); // Master layer for road features
 
 var trafficLayer = L.featureGroup.subGroup(drivingLayer);
-var mqTraffic = MQ.trafficLayer().addTo(trafficLayer);
+var mapboxTrafficUrl = "https://{s}.tiles.mapbox.com/v4/mapbox.mapbox-traffic-v1/{z}/{x}/{y}.vector.pbf?access_token={token}";
+var mapboxTrafficOptions = {
+			rendererFactory: L.canvas.tile,
+			attribution: 'Traffic Data &copy; <a href="https://www.mapbox.com/about/maps/">MapBox</a> & <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+			token: mapboxToken,
+			vectorTileLayerStyles: {
+				traffic: function(properties, zoom) {
+					let style = {weight: 3, color: '#9bc2c4'}
+					
+					switch (properties.congestion) {
+						case 'low':
+							style.color = '#4C8C2B'
+							break;
+						case 'moderate':
+							style.color = '#FFC600'
+							break;
+						case 'heavy':
+							style.color = '#c8102e'
+							break;
+						case 'severe':
+							style.color = '#770013'
+							break;
+						default:
+							style.weight = 0; // Hide invalid lines
+							break;
+					}
+					if (zoom > 12) { // Only use variable weight when zoomed in
+						switch (properties.class) {
+							case 'motorway':
+								style.weight = 5;
+								break;
+							case 'motorway_link':
+								style.weight = 4.75;
+								break;
+							case 'trunk':
+								style.weight = 4;
+								break;
+							case 'trunk_link':
+								style.weight = 3.75;
+								break;
+							case 'primary':
+								style.weight = 3.5;
+								break;
+						}
+					}
+					
+					
+					return style;
+				},
+			},
+		};
+
+var mapboxTrafficLayer = L.vectorGrid.protobuf(mapboxTrafficUrl, mapboxTrafficOptions).addTo(trafficLayer);
+
+setInterval(function () { // Reloads traffic data periodically
+	if (omnimap.hasLayer(trafficLayer)) { // If the traffic layer is enabled
+		mapboxTrafficLayer.redraw(); // Redraw, forcing a reload of traffic data and thus staying updated
+	}
+}, 60 * 1000); // Update every minute
 
 var incidentMarkerOptions = {
 	icon: L.AwesomeMarkers.icon({prefix: 'fa', icon: 'car-crash', markerColor: 'red', iconColor: 'white'})
@@ -857,11 +915,11 @@ var overlayTree = {
 			label: '<b id="l-driving">Driving</b>',
 			layer: drivingLayer,
 			children: [
-				{label: '<span id="l-traffic"><i class="fas fa-fw fa-car p-green"></i> [WIP] Traffic</span>', layer: trafficLayer},
 				{label: '<span id="l-incidents"><i class="fas fa-fw fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
 				{label: '<span id="l-detour"><i class="fas fa-fw fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
 				{label: '<span id="l-camera"><i class="fas fa-fw fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
 				{label: '<span id="l-conditions"><i class="fas fa-fw fa-square c-green"></i> Road Conditions</span>', layer: roadConditionLayer},
+				{label: '<span id="l-traffic"><i class="fas fa-fw fa-square p-green"></i> Traffic</span>', layer: trafficLayer},
 				{label: '<span id="l-parking"><i class="fas fa-fw fa-parking p-blue"></i> Parking</span>', layer: parkingLayer},
 			]
 		},
