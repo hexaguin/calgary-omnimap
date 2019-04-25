@@ -3,7 +3,7 @@
 
 A web-based, mobile-friendly map of Calgary, Alberta developed using the excellent [Leaflet](https://leafletjs.com/) mapping library. All resources are updated in near-realtime, meaning that it can be used as a live dashboard without ever having to reload the page.
 
-Try it for yourself [here](https://python.ryan.hattie.codes/omnimap)!
+### Try it for yourself [here](https://python.ryan.hattie.codes/omnimap)!
 
 Current features include:
 * Multiple basemaps:
