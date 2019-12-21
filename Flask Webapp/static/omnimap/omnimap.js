@@ -943,7 +943,7 @@ var overlayTree = {
 			children: [
 				{label: '<span id="l-parkandbike"><i class="fas fa-fw fa-bicycle p-blue"></i> Park and Bike</span>', layer: parkAndBikeLayer},
 				{label: '<span id="l-cpabike"><i class="fas fa-fw fa-bicycle p-darkgreen"></i> CPA Bike Parking</span>', layer: cpaBikeLayer},
-				{label: '<span id="l-lime"><i class="fas fa-fw fa-bicycle p-green"></i> Lime Rental Bikes</span>', layer: limeBikeLayer}
+				{label: '<span id="l-lime"><i class="fas fa-fw fa-bicycle p-green"></i> Lime Vehicles</span>', layer: limeBikeLayer}
 			]
 		},
 		{
