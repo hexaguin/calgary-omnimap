@@ -887,7 +887,7 @@ $('.leaflet-routing-container').on('click', '.leaflet-routing-geocoder:nth-last-
 drivingLayer.addTo(omnimap);
 incidentLayer.addTo(omnimap);
 detourLayer.addTo(omnimap);
-trafficLayer.addTo(omnimap);
+emptyRoadLayer.addTo(omnimap);
 
 walkingLayer.addTo(omnimap);
 plus15Layer.addTo(omnimap);
@@ -918,9 +918,9 @@ var overlayTree = {
 			label: '<b id="l-driving">Driving</b>',
 			layer: drivingLayer,
 			children: [
+				{label: '<span id="l-emptyroads"><i class="fas fa-fw fa-times"></i> No Color Coding</span>', layer: emptyRoadLayer, radioGroup: 'roadcolor'},
 				{label: '<span id="l-traffic"><i class="fas fa-fw fa-square p-green"></i> Traffic</span>', layer: trafficLayer, radioGroup: 'roadcolor'},
 				{label: '<span id="l-conditions"><i class="fas fa-fw fa-square c-blue"></i> Road Conditions</span>', layer: roadConditionLayer, radioGroup: 'roadcolor'},
-				{label: '<span id="l-emptyroads"><i class="fas fa-fw fa-times"></i> No Color Coding</span>', layer: emptyRoadLayer, radioGroup: 'roadcolor'},
 				{label: '<span id="l-incidents"><i class="fas fa-fw fa-car-crash p-red"></i> Traffic Incidents</span>', layer: incidentLayer},
 				{label: '<span id="l-detour"><i class="fas fa-fw fa-car p-orange"></i> Closures and Detours</span>', layer: detourLayer},
 				{label: '<span id="l-camera"><i class="fas fa-fw fa-camera"></i> Traffic Cameras</span>', layer: cameraLayer},
