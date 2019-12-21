@@ -124,7 +124,7 @@ def get_camera_geojson():
 
     # Load Calgary camera list
     calgary_cameras = pd.read_csv('https://data.calgary.ca/resource/35kd-jzrv.csv')
-    calgary_cameras['id'] = calgary_cameras['url'].apply(name_from_file_url)
+    calgary_cameras['id'] = calgary_cameras['camera_url'].apply(name_from_file_url)
     calgary_cameras.set_index('id', inplace=True)
 
     for index, row in traffic_cameras.iterrows():
