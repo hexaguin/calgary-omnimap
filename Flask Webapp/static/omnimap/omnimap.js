@@ -551,10 +551,12 @@ var limeBike = L.realtime({
 		start: false, //Don't automatically start loading geojson
 		container: limeBikeClusters, //Wrap in cluster group
 		pointToLayer: function(feature, latlng) {
-			return L.marker(latlng, limeBikeMarkerOptions).bindPopup('<h2>Lime Bike</h2><h3>' + feature.properties.plate_number + '</h3>');
+			let type = feature.properties.vehicle_type;
+			return L.marker(latlng, limeBikeMarkerOptions).bindPopup(`<h2>Lime ${type[0].toUpperCase() + type.slice(1)}</h2><h3>ID: ${feature.properties.bike_id}</h3>`);
 		},
 		getFeatureId: function(featureData){
-			return featureData.properties.BICYCLE_ID;
+			console.log(featureData);
+			return featureData.properties.bike_id + featureData.properties.lat + featureData.properties.lon; // Sometimes Lime uses null as an ID for some reason
 		}
 	}
 ).addTo(limeBikeLayer);

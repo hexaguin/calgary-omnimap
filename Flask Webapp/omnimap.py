@@ -208,7 +208,7 @@ def get_ab_road_events_geojson():
 
 def get_lime_geojson():
     """Generates a GeoJSON file of all available Lime bikes in Calgary from the Lime API."""
-    bikes = json.loads(requests.get('https://lime.bike/api/partners/v1/gbfs_calgary/free_bike_status.json', headers).text)
+    bikes = json.loads(requests.get('https://data.lime.bike/api/partners/v1/gbfs/calgary/free_bike_status.json', headers).text)
     bike_list = [
         {
             'type': 'Feature',
